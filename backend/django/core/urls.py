@@ -30,7 +30,7 @@ urlpatterns = [
     ),
     path("api/refresh/", TokenRefreshView.as_view(), name="refresh-token",),
     path(
-        "api/login/",
+        "api/auth/login/",
         TokenObtainPairView.as_view(),
         name="login",
     ),
