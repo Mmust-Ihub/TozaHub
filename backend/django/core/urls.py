@@ -28,7 +28,7 @@ urlpatterns = [
         SpectacularRedocView.as_view(url_name="schema"),
         name="redoc",
     ),
-    path("api/refresh/",TokenRefreshView.as_view(), name="refresh-token",),
+    path("api/refresh/", TokenRefreshView.as_view(), name="refresh-token",),
     path(
         "api/login/",
         TokenObtainPairView.as_view(),
