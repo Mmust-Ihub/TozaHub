@@ -30,11 +30,9 @@ venv.bak/
 .vscode/
 .idea/
 
-# Migrations
-*/migrations/*
 
-# Static and media files
-staticfiles/
+
+
 media/
 
 # Coverage reports
