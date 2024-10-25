@@ -1,5 +1,5 @@
 function Footer() {
-  return <div className="sticky w-full bottom-0">Footer</div>;
+  return <footer className=" h-[200px] bg-rose-100">Footer</footer>;
 }
 
 export default Footer;
