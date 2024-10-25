@@ -10,6 +10,7 @@ class SaccoAdmin(admin.ModelAdmin):
         "id",
         "name",
         "admin",
+        "email",
     ]
 
 

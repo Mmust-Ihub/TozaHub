@@ -1,6 +1,7 @@
 from pathlib import Path
 import os
 from decouple import config
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -105,38 +106,43 @@ AUTH_PASSWORD_VALIDATORS = [
         ),
     },
     {
-        "NAME": (
-            "django.contrib.auth.password_validation."
-            "MinimumLengthValidator"
-        ),
+        "NAME": ("django.contrib.auth.password_validation."
+                 "MinimumLengthValidator",),
     },
     {
-        "NAME": (
-            "django.contrib.auth.password_validation."
-            "CommonPasswordValidator"
-        ),
+        "NAME": ("django.contrib.auth.password_validation."
+                 "CommonPasswordValidator"),
     },
     {
-        "NAME": (
-            "django.contrib.auth.password_validation."
-            "NumericPasswordValidator"
-        ),
+        "NAME": ("django.contrib.auth.password_validation."
+                 "NumericPasswordValidator"),
     },
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-    'DEFAULT_AUTHENTICATION_CLASSES': (
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
+
+SIMPLE_JWT = {
+    "TOKEN_OBTAIN_PAIR_SERIALIZER": (
+        "auth_app.serializers.CustomTokenObtainPairSerializer"
+    ),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
 }
 
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'TOZA APP API',
-    'DESCRIPTION': 'The API for the Toza App',
-    'VERSION': '1.0.0',
-    'SERVE_INCLUDE_SCHEMA': False,
+    "TITLE": "TOZA APP API",
+    "DESCRIPTION": "The API for the Toza App",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
 }
 
 

@@ -16,7 +16,7 @@ class UserManager(BaseUserManager):
         user = self.model(
             email=self.normalize_email(email),
             username=username,
-            **extra_fields
+            **extra_fields,
         )
         user.set_password(password)
         user.save(using=self._db)
@@ -57,7 +57,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.username
-    
+
     def generate_user_id(self):
         return str(uuid.uuid4())
 

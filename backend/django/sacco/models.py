@@ -4,6 +4,7 @@ from django.conf import settings
 
 class Sacco(models.Model):
     name = models.CharField(max_length=150)
+    email = models.EmailField(unique=True,)
     admin = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -21,5 +22,3 @@ class Vehicle(models.Model):
 
     def __str__(self):
         return self.number_plate
-
-    
