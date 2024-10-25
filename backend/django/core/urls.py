@@ -1,13 +1,21 @@
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework.response import Response
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
+from rest_framework.decorators import api_view
+
+
+@api_view(["GET"])
+def index(request):
+    return Response({"message": "Welcome to Toza Hub API"})
 
 
 urlpatterns = [
+    path("", index, name="index"),
     path("admin/", admin.site.urls),
     path(
         "schema/",
@@ -35,3 +43,4 @@ urlpatterns = [
         name="sacco",
     ),
 ]
+
