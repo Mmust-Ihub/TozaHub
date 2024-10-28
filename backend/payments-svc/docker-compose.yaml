@@ -1,0 +1,30 @@
+version: '2'
+services:
+    app:
+        build: .
+        container_name: my-app
+        environment:
+            - NODE_ENV=development
+            - PORT=3000
+            - REDIS_URL=redis://my-cache
+        command: "npm run dev"
+        links:
+            - redis
+        ports:
+            - "3000:3000"
+
+    worker:
+        build: .
+        container_name: my-worker
+        environment:
+            - NODE_ENV=development
+            - REDIS_URL=redis://my-cache
+        command: "npm run worker:dev"
+        links:
+            - redis
+
+    redis:
+        image: redis
+        container_name: my-cache
+        expose:
+            - "6379"
