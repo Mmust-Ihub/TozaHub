@@ -62,6 +62,11 @@ export const getTopUpHistory = async(saccoEMail) => {
   return {count, results}
 }
 
+export const transferMoney = async(from, to, amount, narrative="Tax") => {
+  const resp = await wallets.intraTransfer(from, to, amount, narrative)
+  return resp
+}
+
 const remoteWalletData = async (wallet_id) => {
   const headers = {
     "Content-Type": "application/json",

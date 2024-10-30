@@ -4,6 +4,10 @@
 ### Node ###
 # files
 test.js
+learn.txt
+test.yaml
+test.txt
+.env.prod
 # Logs
 logs
 *.log
