@@ -5,8 +5,7 @@ on:
   push:
     branches: ["main", "payments"]
     paths:
-      - "./backend/payments-svc/**"
-      - './.github/workflows/**'
+      - '**.js'
     tags:
       - "*"
   pull_request:
