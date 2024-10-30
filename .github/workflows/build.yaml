@@ -4,6 +4,9 @@ run-name: build-payments
 on:
   push:
     branches: ["main", "payments"]
+    paths:
+      - "./backend/payments-svc/**"
+      - './.github/workflows/**'
     tags:
       - "*"
   pull_request:
