@@ -4,12 +4,34 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.response import Response
+from django.contrib.auth import authenticate
+
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import Price
 from .serializers import PriceSerializer
 import jwt
 
 # Create your views here.
+
+
+@api_view(['POST'])
+def login(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
+
+    user = authenticate(username=username, password=password)
+    if user is not None:
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+            'role': user.role,  # Assuming user model has a `role` field
+        })
+    else:
+        return Response({"detail": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+    
+
 # check if user has admin role
 def is_admin(request):
     token = request.headers.get('Authorization').split()[1]
