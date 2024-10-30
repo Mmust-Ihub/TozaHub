@@ -28,17 +28,6 @@ const getGroupingId = (interval) => {
       throw new ApiError(400, "invalid interval");
   }
 };
-// export const getSummary = async(body) => {
-//   const { interval, start_date, end_date } = body;
-//   const startDate = new Date(start_date);
-//   const endDate = new Date(end_date);
-//   const pipeline = [
-//     // { $match: {status: "success"} }
-//     { $match: {createdAt: {$gte: startDate, $lte: endDate}} }
-//   ];
-//   const results = await transactionModel.aggregate(pipeline)
-//   return results
-// };
 
 export const getSummary = async(body) => {
   const { interval, start_date, end_date } = body;

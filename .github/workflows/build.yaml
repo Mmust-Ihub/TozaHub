@@ -5,15 +5,13 @@ on:
   push:
     branches: ["main", "payments"]
     paths:
-      - "./backend/payments-svc/**"
-      - './.github/workflows/**'
+      - '**.js'
     tags:
       - "*"
   pull_request:
     branches: ["main"]
     paths:
-      - "./backend/payments-svc/**"
-      - './.github/workflows/**'
+      - "**.js"
     types:
       - closed
   workflow_dispatch:
@@ -29,7 +27,7 @@ jobs:
       run:
         working-directory: ./backend/payments-svc
     steps:
-      - name: checkout the repo
+      - name: checkout the repository
         uses: actions/checkout@v4
 
       - name: login to docker registry
