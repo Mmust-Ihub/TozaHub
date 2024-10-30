@@ -1,6 +1,5 @@
 import _ from "lodash";
 import nodeMailer from "nodemailer";
-import { convert } from "html-to-text"
 import config from "../config/config.js";
 
 export const blockList = (initialObj, arrayToblock) => {
@@ -23,7 +22,6 @@ export const sendMail = (payload) => {
           rejectUnauthorized: false, // Add this line
         },
       });
-      const text = convert(payload.html, { wordwrap: 130 });
       const emailFrom =
         payload.from !== undefined ? payload.from : config.mail.user;
       const emailTo =
