@@ -8,7 +8,5 @@ import sensorWorker from "./payments/jobs/workers/sensorWorker.js";
 import transactionWorker from "./payments/jobs/workers/transactionWorker.js";
 import mailWorker from "./payments/jobs/queues/mailWorker.js";
 
-walletWorker;
-sensorWorker;
-transactionWorker;
-mailWorker;
+
+export default {walletWorker, sensorWorker, transactionWorker, mailWorker}
