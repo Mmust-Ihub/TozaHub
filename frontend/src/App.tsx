@@ -1,53 +1,33 @@
-import "./App.css";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Admin from "./pages/Admin";
-import GovAgent from "./pages/GovAgent/GovAgent";
-import SaccoAdmin from "./pages/SaccoAdmin";
-import Home from "./pages/Home";
-import ForgotPassword from "./pages/ForgotPassword";
-import NotFoundPage from "./pages/NotFoundPage";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "react-hot-toast";
+import { DashboardLayout } from "./components/layout/DashboardLayout";
+import { LoginPage } from "./pages/auth/LoginPage";
+import { DashboardPage } from "./pages/dashboard/DashboardPage";
+import { VehiclesPage } from "./pages/vehicles/VehiclesPage";
+import { PaymentsPage } from "./pages/payments/PaymentsPage";
+import { SettingsPage } from "./pages/settings/SettingsPage";
 
-import Header from './components/common/Header'
-import Footer from './components/common/Footer'
+const queryClient = new QueryClient();
 
-const Layout = ({
-  children,
-}:{
-  children: React.ReactNode;
-}
-) => {
-
-
-  return (
-    <>
-      <div className="h-[10vh]">
-      <Header/>
-      </div>
-      <main className={`flex-grow mt-10 `}>{children}</main>
-      <Footer />
-    </>
-  );
-};
 function App() {
   return (
-    <Router>
-      <div className="App flex flex-col min-h-screen">
-        <Layout>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
         <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/admin" element={<Admin />} />
-          <Route path="/govagent/*" element={<GovAgent />} />
-          <Route path="/saccoadmin" element={<SaccoAdmin />} />
-          <Route path="/" element={<Home />} />
-          <Route path="*" element={<NotFoundPage />} />
+          <Route path="/login" element={<LoginPage />} />
+
+          <Route path="/" element={<DashboardLayout />}>
+            <Route index element={<Navigate to="/dashboard" replace />} />
+            <Route path="dashboard" element={<DashboardPage />} />
+            <Route path="vehicles" element={<VehiclesPage />} />
+            <Route path="payments" element={<PaymentsPage />} />
+            <Route path="settings" element={<SettingsPage />} />
+          </Route>
         </Routes>
-        </Layout>
-      </div>
-    </Router>
+      </BrowserRouter>
+      <Toaster position="top-right" />
+    </QueryClientProvider>
   );
 }
 
