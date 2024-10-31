@@ -1,6 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
+import requests
 from rest_framework import status
 from drf_spectacular.utils import (
     extend_schema,
@@ -17,6 +18,15 @@ from .serializers import (
 )
 
 
+# function to check valid phone number
+def is_valid_phone_number(phone_number):
+    if not phone_number.startswith("254"):
+        return False
+    if len(phone_number) != 12:
+        return False
+    return True
+
+
 class SaccoViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
     queryset = Sacco.objects.all()
@@ -24,9 +34,29 @@ class SaccoViewSet(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         user = request.user
+        url = "http://164.92.165.41/ap/v1/wallet/create/"
+        if "phone" not in request.data:
+            return Response(
+                {"error": "Phone number is required"},
+                status=400,
+            )
+        if not is_valid_phone_number(request.data["phone"]):
+            return Response(
+                {"error": "Invalid phone number"},
+                status=400,
+            )
         if user.is_sacco_admin:
             request.data["admin"] = user.id
-            return super().create(request, *args, **kwargs)
+            response = requests.post(url, data=request.data)
+            print(response.json())
+            if response.status_code == 201:
+                return super().create(request, *args, **kwargs)
+            return Response(
+                {
+                    "error": "Failed to create sacco wallet",
+                },
+                status=400,
+            )
 
         return Response(
             {"error": "You are not authorized to create a sacco"},
