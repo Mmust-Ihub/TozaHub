@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon dev.js",
+    "dev": "nodemon server.js",
     "dev1": "concurrently \"nodemon server.js\" \"./start_workers.sh\"",
     "worker": "nodemon worker.js",
     "start": "node server.js"
