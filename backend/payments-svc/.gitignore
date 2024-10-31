@@ -8,6 +8,7 @@ learn.txt
 test.yaml
 test.txt
 .env.prod
+dev.js
 # Logs
 logs
 *.log

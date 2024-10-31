@@ -5,15 +5,15 @@ on:
   push:
     branches: ["main", "payments"]
     paths:
-      - "./backend/payments-svc/**"
-      - './.github/workflows/**'
+      - '**.js'
+      - '**.yaml'
     tags:
       - "*"
   pull_request:
     branches: ["main"]
     paths:
-      - "./backend/payments-svc/**"
-      - './.github/workflows/**'
+      - '**.js'
+      - '**.yaml'
     types:
       - closed
   workflow_dispatch:

@@ -1,5 +1,8 @@
 import { transactionModel } from "../models/transactions.model.js";
 import { ApiError } from "../utils/APiError.js";
+import { intasend } from "./wallet.service.js";
+
+let payouts = intasend.payouts()
 
 const getGroupingId = (interval) => {
   switch (interval) {
@@ -28,21 +31,9 @@ const getGroupingId = (interval) => {
       throw new ApiError(400, "invalid interval");
   }
 };
-// export const getSummary = async(body) => {
-//   const { interval, start_date, end_date } = body;
-//   const startDate = new Date(start_date);
-//   const endDate = new Date(end_date);
-//   const pipeline = [
-//     // { $match: {status: "success"} }
-//     { $match: {createdAt: {$gte: startDate, $lte: endDate}} }
-//   ];
-//   const results = await transactionModel.aggregate(pipeline)
-//   return results
-// };
 
 export const getSummary = async(body) => {
   const { interval, start_date, end_date } = body;
-  console.log(interval)
   const startDate = new Date(start_date);
   const endDate = new Date(end_date);
   const pipeline = [
@@ -64,3 +55,18 @@ export const getSummary = async(body) => {
   const results = await transactionModel.aggregate(pipeline)
   return results
 };
+
+export const withdraw = async(body) => {
+  const resp = await payouts.mpesa({
+      currency: 'KES',
+      transactions: [{
+        name: 'Joe Doe',
+        account: body.phone_number,
+        amount: body.amount,
+        narrative: "withdrawal"
+      }],
+      wallet_id:body.wallet_id
+    })
+  const approve = await payouts.approve(resp)
+  return approve
+}
