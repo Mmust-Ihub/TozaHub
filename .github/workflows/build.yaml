@@ -6,12 +6,14 @@ on:
     branches: ["main", "payments"]
     paths:
       - '**.js'
+      - '**.yaml'
     tags:
       - "*"
   pull_request:
     branches: ["main"]
     paths:
-      - "**.js"
+      - '**.js'
+      - '**.yaml'
     types:
       - closed
   workflow_dispatch:

@@ -17,3 +17,8 @@ export const summarySchema = joi.object({
   start_date: joi.string().required(),
   end_date: joi.string().required()
 })
+
+export const withdrawSchema = joi.object({
+  phone_number: joi.number().min(10).required(),
+  amount: joi.number().required()
+})
