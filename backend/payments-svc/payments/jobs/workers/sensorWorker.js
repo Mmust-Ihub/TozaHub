@@ -34,7 +34,8 @@ const getVehicleInfo = async (number_plate) => {
 
 const sensorWorker = new Worker(config.bullmq.sensor_queue, async(job) => {
   const details = await getVehicleInfo(job.data.plate)
-    await sensorModel.create(blockList(details, ["wallet_id"]));
+  console.log(details)
+    // await sensorModel.create(blockList(details, ["wallet_id"]));
     return {...details, "amount": 1}
 }, {
 connection: redisConnection,
@@ -46,7 +47,7 @@ sensorWorker.on("active", (job) => {
 
 sensorWorker.on("completed", async (job, result) => {
   logger.info(`[${job.id}] sensor data processing  completed successfully`);
-  await transQueue.add("transaction", result, removeConfig)
+  // await transQueue.add("transaction", result, removeConfig)
 });
 
 sensorWorker.on("failed", async(job, err) => {
