@@ -1,6 +1,6 @@
 
 import { connectToMongoDB } from "./payments/helpers/mongodb.js";
-console.log("RUnning the workers ....")
+console.log("Running the workers ....")
 connectToMongoDB()
 
 import walletWorker from "./payments/jobs/workers/walletWorker.js";

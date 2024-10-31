@@ -6,9 +6,11 @@
 test.js
 learn.txt
 test.yaml
+docker-compose.prod.yaml
 test.txt
 .env.prod
 dev.js
+nginx/nginx.conf
 # Logs
 logs
 *.log

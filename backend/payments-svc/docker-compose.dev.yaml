@@ -1,0 +1,94 @@
+services:
+  payment:
+    image: banditantony9/payment:latest
+    container_name: payment
+    env_file:
+      - path: ./.env
+        required: true
+    expose:
+      - 3000
+    environment:
+      MONGODB_URL: mongodb://admin:password@mongodb:27017
+      MONGODB_NAME: Toza
+      NODE_ENV: production
+      REDIS_URL: redis://redis:6379
+    command: npm start
+    depends_on:
+      - mongodb
+      - redis
+      - nginx
+    networks:
+      - toza
+    restart: always
+    stdin_open: true
+    tty: true
+
+  worker:
+    image: banditantony9/payment:latest
+    container_name: worker
+    env_file:
+      - path: ./.env
+        required: true
+    environment:
+      MONGODB_URL: mongodb://admin:password@mongodb:27017
+      MONGODB_NAME: Toza
+      NODE_ENV: production
+      REDIS_URL: redis://redis:6379
+    command: npm run worker
+    depends_on:
+      - payment
+    networks:
+      - toza
+    restart: always
+    stdin_open: true
+    tty: true
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: dev.Dockerfile
+    container_name: nginx
+    restart: always
+    ports:
+      - "80:80"
+    networks:
+      - toza
+    stdin_open: true
+    tty: true
+
+  redis:
+    image: redis
+    container_name: redis
+    restart: always
+    expose:
+      - 6379
+    ports:
+      - "6379:6379"
+    networks:
+      - toza
+    stdin_open: true
+    tty: true
+
+  mongodb:
+    restart: always
+    image: mongo:4.4.18
+    container_name: mongo-cont
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    networks:
+      - toza
+    volumes:
+      - toza-data:/data/db
+    stdin_open: true
+    tty: true
+
+volumes:
+  toza-data:
+    driver: local
+
+networks:
+  toza:
+    driver: bridge
