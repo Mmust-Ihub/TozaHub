@@ -3,7 +3,7 @@ run-name: build-payments
 
 on:
   push:
-    branches: ["main", "payments"]
+    branches: ["main"]
     paths:
       - '**.js'
       - '**.yaml'
