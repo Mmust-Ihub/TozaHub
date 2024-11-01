@@ -63,6 +63,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             password=validated_data["password"],
             first_name=validated_data.get("first_name", ""),
             last_name=validated_data.get("last_name", ""),
+            is_sacco_admin=True,
         )
 
 
@@ -70,9 +71,7 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
-        print("generating token")
         token["username"] = user.username
         token["email"] = user.email
         token["is_sacco_admin"] = user.is_sacco_admin
-        print(token["email"])
         return token

@@ -80,6 +80,7 @@ def signup(request):
         return Response(
             {
                 "message": "User created successfully",
+                "data": serializer.data
             },
             status=status.HTTP_201_CREATED,
         )
@@ -109,7 +110,6 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             user = User.objects.get(username=request.data["username"])
             response = super().post(request, *args, **kwargs)
             response.data["is_sacco_admin"] = user.is_sacco_admin
-            print(response.data)
             return Response(response.data)
         except User.DoesNotExist:
             return Response(
