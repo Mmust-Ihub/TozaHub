@@ -3,6 +3,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 import requests
 from rest_framework import status
+from decouple import config
 from drf_spectacular.utils import (
     extend_schema,
     OpenApiParameter,
@@ -34,7 +35,7 @@ class SaccoViewSet(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         user = request.user
-        url = "http://164.92.165.41/ap/v1/wallet/create/"
+        url = config("WALLET_URL")
         if "phone" not in request.data:
             return Response(
                 {"error": "Phone number is required"},
@@ -45,11 +46,24 @@ class SaccoViewSet(ModelViewSet):
                 {"error": "Invalid phone number"},
                 status=400,
             )
+        user_sacco = Sacco.objects.filter(admin=user)
+        if user_sacco:
+            return Response(
+                {
+                    "error": "You can't create more than one sacco",
+                },
+                status=status.HTTP_406_NOT_ACCEPTABLE
+            )
         if user.is_sacco_admin:
             request.data["admin"] = user.id
-            response = requests.post(url, data=request.data)
+            wallet_data = {
+                "phone_number": request.data["phone"],
+                "email": request.data["email"],
+                "name": request.data["name"]
+            }
+            response = requests.post(url, data=wallet_data)
             print(response.json())
-            if response.status_code == 201:
+            if response.status_code == 202:
                 return super().create(request, *args, **kwargs)
             return Response(
                 {
