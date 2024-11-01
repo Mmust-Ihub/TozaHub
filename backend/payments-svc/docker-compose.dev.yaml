@@ -2,6 +2,7 @@ services:
   payment:
     image: banditantony9/payment:latest
     container_name: payment
+    pull_policy: always
     env_file:
       - path: ./.env
         required: true
@@ -26,6 +27,7 @@ services:
   worker:
     image: banditantony9/payment:latest
     container_name: worker
+    pull_policy: always
     env_file:
       - path: ./.env
         required: true
