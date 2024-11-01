@@ -60,12 +60,15 @@ services:
     image: redis
     container_name: redis
     restart: always
+    command: ["redis-server", "--appendonly", "yes"]
     expose:
       - 6379
     ports:
       - "6379:6379"
     networks:
       - toza
+    volumes:
+      - cache:/data
     stdin_open: true
     tty: true
 
@@ -87,6 +90,8 @@ services:
 
 volumes:
   toza-data:
+    driver: local
+  cache:
     driver: local
 
 networks:
