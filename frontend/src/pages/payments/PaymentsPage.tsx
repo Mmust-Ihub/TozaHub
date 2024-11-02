@@ -1,8 +1,13 @@
 import { useState } from "react";
 import { BarChart, CreditCard, Search } from "lucide-react";
 import { Button } from "../../components/ui/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/Card";
-import type { Payment, Transaction } from "@/lib/types";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/Card";
+import type { Payment, Transaction } from "../../lib/types";
 import {
   Chart as ChartJS,
   CategoryScale,
