@@ -1,0 +1,107 @@
+services:
+  payment:
+    build: ./
+    container_name: payment
+    env_file:
+      - path: ./.env.prod
+        required: true
+    expose:
+      - 3000
+    ports:
+      - "3000:3000"
+    environment:
+      MONGODB_URL: mongodb://admin:password@mongodb:27017
+      MONGODB_NAME: Toza
+      NODE_ENV: production
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    command: npm run dev
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - toza
+    volumes:
+      - .:/usr/src/app
+    stdin_open: true
+    tty: true
+
+  worker:
+    build: ./
+    container_name: worker
+    env_file:
+      - path: ./.env.prod
+        required: true
+    environment:
+      MONGODB_URL: mongodb://admin:password@mongodb:27017
+      MONGODB_NAME: Toza
+      NODE_ENV: production
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    command: npm run worker
+    depends_on:
+      - payment
+    networks:
+      - toza
+    volumes:
+      - .:/usr/src/app
+    stdin_open: true
+    tty: true
+
+  redis:
+    image: redis
+    container_name: redis
+    command: ["redis-server", "--appendonly", "yes"]
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - toza
+    volumes:
+      - cache:/data
+    stdin_open: true
+    tty: true
+
+  mongodb:
+    restart: always
+    image: mongo:4.4.18
+    container_name: mongo-cont
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    networks:
+      - toza
+    volumes:
+      - toza-data:/data/db
+    stdin_open: true
+    tty: true
+
+  mongo-express:
+    restart: always
+    image: mongo-express
+    container_name: express-cont
+    ports:
+      - "8081:8081"
+    networks:
+      - toza
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: password
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_MONGODB_URL: mongodb://admin:password@mongodb:27017/
+    depends_on:
+      - mongodb
+    stdin_open: true
+    tty: true
+
+volumes:
+  toza-data:
+    driver: local
+  cache:
+    driver: local
+
+networks:
+  toza:
+    driver: bridge
