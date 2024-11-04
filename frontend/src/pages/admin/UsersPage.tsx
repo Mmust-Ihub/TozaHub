@@ -39,17 +39,13 @@ export default function UsersPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between py-2 gap-2 flex-col md:flex-row">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">User Management</h1>
           <p className="text-muted-foreground">
             Manage system users and their permissions
           </p>
         </div>
-        <Button>
-          <UserPlus className="mr-2 h-4 w-4" />
-          Add User
-        </Button>
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
