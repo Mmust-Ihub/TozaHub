@@ -1,9 +1,10 @@
 import config from "./config.js";
 
 export const redisConnection = {
-  host: config.bullmq.redis_host,
-  port: config.bullmq.redis_port,
+  url: config.bullmq.redis_url,
 };
+
+
 export const removeConfig = {
   removeOnComplete: {
     age: 3600,

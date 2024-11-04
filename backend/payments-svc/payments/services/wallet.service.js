@@ -5,7 +5,7 @@ import { walletModel } from "../models/wallet.model.js";
 import config from "../config/config.js";
 import { allowList, blockList } from "../utils/utils.js";
 
-const intasend = new IntaSend(
+export const intasend = new IntaSend(
   config.intasend.key,
   config.intasend.secret,
   config.intasend.env
@@ -62,7 +62,12 @@ export const getTopUpHistory = async(saccoEMail) => {
   return {count, results}
 }
 
-const remoteWalletData = async (wallet_id) => {
+export const transferMoney = async(from, to, amount, narrative="Tax") => {
+  const resp = await wallets.intraTransfer(from, to, amount, narrative)
+  return resp
+}
+
+export const remoteWalletData = async (wallet_id) => {
   const headers = {
     "Content-Type": "application/json",
     "Authorization": `Bearer ${config.intasend.secret}`,

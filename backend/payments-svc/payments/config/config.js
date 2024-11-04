@@ -19,14 +19,26 @@ const envVarsSchema = joi
     BASE_URL: joi.string().required().description("Application base url "),
     MONGODB_URL: joi.string().required().description("Mongodb url"),
     MONGODB_NAME: joi.string().required().description("Mongodb name"),
+    // mail
+    GMAIL_USER: joi.string().required().description("default gmail username"),
+    GMAIL_PASSWORD: joi.string().required().description("default gmail password "),
+    // auth service
+    AUTH_USERNAME: joi.string().required().description("auth username"),
+    AUTH_PASSWORD: joi.string().required().description("auth password"),
+    AUTH_URL: joi.string().required().description("auth url"),
+    VEHICLE_URL: joi.string().required().description("vehicle url"),
+    // intasend
     INTA_PUBLISHABLE_KEY: joi.string().required().description("Intasend publishable key"),
     INTA_SECRET_TOKEN: joi.string().required().description("Intasend secret token"),
     INTA_TEST_ENV: joi.string().required().description("Intasend test environment"),
     INTA_WALLET_URL: joi.string().required().description("Intasend wallet url"),
-    REDIS_HOST: joi.string().required().description("Redis host"),
-    REDIS_PORT: joi.string().required().description("Redis port "),
+    DEFAULT_WALLET: joi.string().required().description("Intasend central wallet"),
+    // bullmq
+    REDIS_URL: joi.string().required().description("Redis url"),
     WALLET_QUEUE: joi.string().required().description("bullmq wallet queue"),
-    EMAIL_QUEUE: joi.string().required().description("bullmq email queue")
+    EMAIL_QUEUE: joi.string().required().description("bullmq email queue"),
+    SENSOR_QUEUE: joi.string().required().description("bullmq sensor queue"),
+    TRANS_QUEUE: joi.string().required().description("bullmq transaction queue")
   })
   .unknown();
 
@@ -41,20 +53,32 @@ export default {
   env: envVars.NODE_ENV,
   port: envVars.PORT,
   base_url: envVars.BASE_URL,
+  mail: {
+    user: envVars.GMAIL_USER,
+    pass: envVars.GMAIL_PASSWORD
+  },
   mongoose: {
     url: envVars.MONGODB_URL,
     name: envVars.MONGODB_NAME,
+  },
+  auth: {
+    username: envVars.AUTH_USERNAME,
+    password: envVars.AUTH_PASSWORD,
+    auth_url: envVars.AUTH_URL,
+    vehicl_url: envVars.VEHICLE_URL
   },
   intasend: {
     key: envVars.INTA_PUBLISHABLE_KEY,
     secret: envVars.INTA_SECRET_TOKEN,
     env: envVars.INTA_TEST_ENV,
-    wallet_url: envVars.INTA_WALLET_URL
+    wallet_url: envVars.INTA_WALLET_URL,
+    default_wallet: envVars.DEFAULT_WALLET
   },
   bullmq: {
-    redis_host: envVars.REDIS_HOST,
-    redis_port: envVars.REDIS_PORT,
+    redis_url: envVars.REDIS_URL,
     wallet_queue: envVars.WALLET_QUEUE,
-    email_queue: envVars.EMAIL_QUEUE
+    email_queue: envVars.EMAIL_QUEUE,
+    sensor_queue: envVars.SENSOR_QUEUE,
+    trans_queue: envVars.TRANS_QUEUE
   }
 };

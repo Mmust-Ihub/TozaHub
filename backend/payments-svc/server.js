@@ -3,8 +3,6 @@ import app from "./payments/app.js";
 import config from "./payments/config/config.js";
 import logger from "./payments/config/logger.js";
 
-// workers
-import createWalletWorker from "./payments/jobs/workers/walletWorker.js";
 
 
 let server = app.listen(config.port, () => {
