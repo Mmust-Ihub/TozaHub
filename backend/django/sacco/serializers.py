@@ -18,6 +18,7 @@ class SaccoSerializer(serializers.ModelSerializer):
             "name",
             "admin",
             "email",
+            "phone",
         ]
 
     def to_representation(self, instance):

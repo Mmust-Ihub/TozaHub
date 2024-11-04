@@ -4,7 +4,15 @@ from django.conf import settings
 
 class Sacco(models.Model):
     name = models.CharField(max_length=150)
-    email = models.EmailField(unique=True,)
+    email = models.EmailField(
+        unique=True,
+    )
+    phone = models.CharField(
+        max_length=150,
+        blank=True,
+        unique=True,
+        null=True,
+    )
     admin = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,

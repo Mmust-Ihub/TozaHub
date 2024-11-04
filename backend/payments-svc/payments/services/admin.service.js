@@ -45,6 +45,9 @@ export const getSummary = async(body) => {
         successful_transactions: {
           $sum: { $cond: [{ $eq: ["$status", "success"] }, 1, 0] },
         },
+        pending_transactions: {
+          $sum: { $cond: [{ $eq: ["$status", "failed"] }, 1, 0] },
+        },
         total_amount_collected: {
           $sum: { $cond: [{ $eq: ["$status", "success"] }, "$amount", 0] },
         },

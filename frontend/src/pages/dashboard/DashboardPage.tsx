@@ -1,6 +1,11 @@
 import { useAtom } from "jotai";
 import { BarChart3, Car, CreditCard, TrendingUp } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/Card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/Card";
 import { userRoleAtom } from "../../lib/store";
 import { cn } from "../../lib/utils";
 
