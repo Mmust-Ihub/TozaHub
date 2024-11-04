@@ -1,4 +1,4 @@
-import { useAtom } from "jotai";
+
 import { BarChart3, Car, CreditCard, TrendingUp } from "lucide-react";
 import {
   Card,
@@ -6,12 +6,18 @@ import {
   CardHeader,
   CardTitle,
 } from "../../components/ui/Card";
-import { userRoleAtom } from "../../lib/store";
+
 import { cn } from "../../lib/utils";
+import useAuthToken from "../../hooks/useAuth";
+import { Navigate } from "react-router-dom";
 
 export function DashboardPage() {
-  const [role] = useAtom(userRoleAtom);
-
+   const { getItem} = useAuthToken();
+   const { token, isRole } = getItem();
+ if (!token || !isRole) {
+   return <Navigate to="/login" replace />;
+ }
+ const role = isRole ? "GENERAL_ADMIN" : "SACCO_ADMIN";
   const stats = {
     GENERAL_ADMIN: [
       {
