@@ -28,22 +28,22 @@ export function LoginPage() {
 
   return (
     <div className="w-screen h-screen bg-gray-50 flex flex-col justify-center py-12 lg:px-8 items-center px-4">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md pb-6">
-        <div className="flex justify-center items-center">
-          <Car className="h-12 w-12 text-blue-600" />
-          <h2 className="text-center text-3xl font-extrabold text-gray-700">
-            TozaHub
-          </h2>
-        </div>
-
-        <p className="mt-2 text-center text-md font-bold text-gray-600">
-          Vehicle Taxation Management System
-        </p>
-      </div>
       <form
         action=""
-        className="w-full md:w-[40%] justify-center items-center flex flex-col gap-4"
+        className="w-full md:w-[40%] justify-center items-center flex flex-col gap-4 border-2 py-12 px-2 shadow-2xl rounded-lg "
       >
+        <div className="sm:mx-auto sm:w-full sm:max-w-md pb-6">
+          <div className="flex justify-center items-center">
+            <Car className="h-12 w-12 text-blue-600" />
+            <h2 className="text-center text-3xl font-extrabold text-gray-700">
+              TozaHub
+            </h2>
+          </div>
+
+          <p className="mt-2 text-center text-md font-bold text-gray-600">
+            Vehicle Taxation Management System
+          </p>
+        </div>
         <div className="w-full flex flex-col justify-center">
           <label htmlFor="email" className="font-bold py-2">
             Email
@@ -74,7 +74,23 @@ export function LoginPage() {
           onClick={() => handleLogin("GENERAL_ADMIN")}
           isLoading={isLoading}
         >
-          Login as General Admin
+          Login as GENERAL_ADMIN
+        </Button>
+        <Button
+          type="submit"
+          className="w-full"
+          onClick={() => handleLogin("SACCO_ADMIN")}
+          isLoading={isLoading}
+        >
+          Login as SACCO_ADMIN
+        </Button>
+        <Button
+          type="submit"
+          className="w-full"
+          onClick={() => handleLogin("GOVERNMENT_AGENT")}
+          isLoading={isLoading}
+        >
+          Login as GOVERNMENT_AGENT
         </Button>
       </form>
 
