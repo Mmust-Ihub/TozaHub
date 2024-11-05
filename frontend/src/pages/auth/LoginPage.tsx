@@ -1,33 +1,71 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSetAtom } from "jotai";
+import toast, { Toaster } from "react-hot-toast";
 import { Car } from "lucide-react";
-import { userAtom } from "../../lib/store";
+
 import { Button } from "../../components/ui/Button";
 
 export function LoginPage() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const setUser = useSetAtom(userAtom);
+
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = async (role: string) => {
+  const handleLogin = async () => {
     setIsLoading(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    const notify = toast.loading("Logging in...");
+    if (!username || !password) {
+      return toast.error("Please fill in all fields");
+    }
 
-    setUser({
-      id: "1",
-      name: "John Doe",
-      email: "john@example.com",
-      role: role as any,
-    });
+    try {
+      // Simulate API call
+      const response = await fetch(
+        "https://toza-hub.vercel.app/api/auth/login/",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            username: username,
+            password: password,
+          }),
+          headers: {
+            "Content-type": "application/json",
+          },
+        }
+      );
 
-    setIsLoading(false);
-    navigate("/dashboard");
+      if (response.ok) {
+        toast.success("Login successful", { id: notify });
+        const data = await response.json();
+        console.log(data);
+        localStorage.setItem("tozaAuth", data?.access);
+        localStorage.setItem("tozaRole", JSON.stringify(data?.is_sacco_admin));
+        // data?.is_sacco_admin ? navigate("/sacco") : navigate("/dashboard");
+        navigate("/dashboard");
+      }
+
+      if (response.status === 404) {
+        toast.error("Invalid credentials", { id: notify });
+        console.log("Invalid credentials");
+      }
+      if (response.status === 401) {
+        toast.error("Unauthorized 401", { id: notify });
+        console.log("Unauthorized 401");
+        navigate("/login");
+      }
+    } catch (error) {
+      toast.error("An error occurred", { id: notify });
+      console.log(error);
+    } finally {
+      // toast.dismiss(notify);
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="w-screen h-screen bg-gray-50 flex flex-col justify-center py-12 lg:px-8 items-center px-4">
+      <Toaster position="top-right" />
       <form
         action=""
         className="w-full md:w-[40%] justify-center items-center flex flex-col gap-4 border-2 py-12 px-2 shadow-2xl rounded-lg "
@@ -45,13 +83,15 @@ export function LoginPage() {
           </p>
         </div>
         <div className="w-full flex flex-col justify-center">
-          <label htmlFor="email" className="font-bold py-2">
-            Email
+          <label htmlFor="username" className="font-bold py-2">
+            Username
           </label>
           <input
-            type="email"
-            id="email"
-            placeholder="email..."
+            type="text"
+            id="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="username..."
             className="w-full border-2 rounded-lg p-2 border-gray-500"
             required
           />
@@ -63,6 +103,8 @@ export function LoginPage() {
           <input
             type="password"
             id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             placeholder="password..."
             className="w-full border-2 rounded-lg p-2 border-gray-500"
             required
@@ -71,26 +113,10 @@ export function LoginPage() {
         <Button
           type="submit"
           className="w-full"
-          onClick={() => handleLogin("GENERAL_ADMIN")}
+          onClick={() => handleLogin()}
           isLoading={isLoading}
         >
-          Login as GENERAL_ADMIN
-        </Button>
-        <Button
-          type="submit"
-          className="w-full"
-          onClick={() => handleLogin("SACCO_ADMIN")}
-          isLoading={isLoading}
-        >
-          Login as SACCO_ADMIN
-        </Button>
-        <Button
-          type="submit"
-          className="w-full"
-          onClick={() => handleLogin("GOVERNMENT_AGENT")}
-          isLoading={isLoading}
-        >
-          Login as GOVERNMENT_AGENT
+          Login
         </Button>
       </form>
 

@@ -42,9 +42,9 @@ export default function PaymentRatesPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col lg:items-center justify-between md:flex-row py-2 gap-2">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Payment Rates</h1>
+          <h1 className="text-2xl font-bold">Payment Rates</h1>
           <p className="text-muted-foreground">
             Manage vehicle taxation rates and payment schedules
           </p>
