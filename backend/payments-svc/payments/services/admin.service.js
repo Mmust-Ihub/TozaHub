@@ -41,7 +41,7 @@ export const getSummary = async(body) => {
     {
       $group: {
         _id: getGroupingId(interval),
-        total_transactions: { $count: {} },
+        total_transactions: { $sum: 1},
         successful_transactions: {
           $sum: { $cond: [{ $eq: ["$status", "success"] }, 1, 0] },
         },
