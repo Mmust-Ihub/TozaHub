@@ -42,7 +42,6 @@ const walletSchema = mongoose.Schema(
     wallet_type: {
       type: String,
       required: true,
-      unique: true,
       trim: true,
     },
     label: {
