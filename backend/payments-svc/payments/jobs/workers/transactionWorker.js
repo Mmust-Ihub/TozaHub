@@ -9,9 +9,7 @@ import { blockList } from "../../utils/utils.js";
 
 
 const transactionWorker = new Worker(config.bullmq.trans_queue, async(job) => {
-  console.log(job.data)
-    // await transferMoney("QJ45DZR", "6RNKJER", 1)
-    await transferMoney(job.data.wallet_id, "6RNKJER", 1)
+    await transferMoney(job.data.wallet_id, config.intasend.default_wallet, 1)
     await transactionModel.create({...job.data, "status": "success"})
 
 }, {

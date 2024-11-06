@@ -1,65 +1,65 @@
 import { transactionModel } from "../models/transactions.model.js";
-import { blockList} from "../utils/utils.js";
+import { blockList } from "../utils/utils.js";
 
-export const getSummary = async (body) => {
-  const { start_date, end_date } = body;
-  let dateFilter = {};
-  if (start_date && end_date) {
-    dateFilter = {
-      transaction_date: {
-        $gte: new Date(start_date),
-        $lte: new Date(end_date),
-      },
-    };
-  }
-
+export const getSummary = async () => {
   const pipeline = [
-    // Step 1: Filter by status 'unpaid' and date range
     {
       $match: {
         status: "failed",
-        ...dateFilter,
       },
     },
-    // Step 2: Group by sacco_id and calculate unpaid amount per SACCO
     {
       $group: {
         _id: "$name",
-        totalUnpaidAmount: { $sum: "$amount" }, // Summing up unpaid amounts per SACCO
+        totalUnpaidAmount: { $sum: "$amount" },
+        pending: { $sum: 1 },
       },
     },
-    // Step 3: Group all SACCOs and calculate total unpaid and count
     {
       $group: {
         _id: null,
-        totalUnpaidAmount: { $sum: "$totalUnpaidAmount" }, // Total unpaid amount across all SACCOs
-        numberOfSACCOsWithUnpaidDues: { $sum: 1 }, // Counting SACCOs with unpaid dues
+        totalUnpaidAmount: { $sum: "$totalUnpaidAmount" },
+        saccosWithUnpaidDues: { $sum: 1 },
+        pending: { $sum: "$pending" },
       },
     },
-    // Step 4: Project final output format
     {
       $project: {
         _id: 0,
         totalUnpaidAmount: 1,
-        numberOfSACCOsWithUnpaidDues: 1,
+        saccosWithUnpaidDues: 1,
+        pending: 1,
       },
     },
   ];
-
-  const result = await transactionModel.aggregate(pipeline)
-  return result
+  return await transactionModel.aggregate(pipeline);
 };
 
-export const failedTransactions = async(data) => {
-    const pipeline = [
-        {$match: {email: data.email, status: "failed"}},
-        {$sort: {createdAt: -1}}
-    ]
-    let result = await transactionModel.aggregate(pipeline)
-    let response = []
-    result.forEach((data) => {
-        response.push(blockList(data, ["_id", "name", "email"]))
-    })
-    return response
-}
+export const getSaccosSummary = async () => {
+  const pipeline = [
+    { $match: { status: "failed" } },
+    { $group: { _id: "$name", pending: { $sum: "$amount" }, email: {$first: "$email"} } },
+    {
+      $project: {
+        _id: 0,
+        name: "$_id",
+        email: 1,
+        pending: 1,
+      },
+    },
+  ];
+  return  await transactionModel.aggregate(pipeline);
+};
 
+export const failedTransactions = async (data) => {
+  const pipeline = [
+    { $match: { email: data.email, status: "failed" } },
+    { $sort: { createdAt: -1 } },
+  ];
+  let result = await transactionModel.aggregate(pipeline);
+  let response = [];
+  result.forEach((data) => {
+    response.push(blockList(data, ["_id", "name", "email"]));
+  });
+  return response;
+};
