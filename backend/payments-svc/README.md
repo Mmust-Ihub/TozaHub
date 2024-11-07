@@ -237,19 +237,19 @@ url: /api/v1/admin/summary?interval=daily&start_date=2024-10-29&end_date=2024-10
 - **_status code_**: `200`
 - **_response body_**:
 
- ```json
-  {
-    "current_balance": 0,
-    "totalUnpaid": {
-      "$numberDecimal": "1"
-    },
-    "pending": 1
-  }
-  ```
+```json
+{
+  "current_balance": 0,
+  "totalUnpaid": {
+    "$numberDecimal": "1"
+  },
+  "pending": 1
+}
+```
 
-  > ## TopUp Sacco Account
-  >
-  > > **request**
+> ## TopUp Sacco Account
+>
+> > **request**
 
 - **_url_**: `{{base_url}}/api/v1/sacco/topup`
 - **_method:_** `POST`
@@ -277,9 +277,9 @@ url: /api/v1/admin/summary?interval=daily&start_date=2024-10-29&end_date=2024-10
 }
 ```
 
-  > ## TopUp History
-  >
-  > > **request**
+> ## TopUp History
+>
+> > **request**
 
 - **_url_**: `{{base_url}}/api/v1/sacco/topup/history`
 - **_method:_** `POST`
@@ -289,7 +289,7 @@ url: /api/v1/admin/summary?interval=daily&start_date=2024-10-29&end_date=2024-10
 
 ```json
 {
-  "email": "antonygichoya9@gmail.com"
+  "email": "test@gmail.com"
 }
 ```
 
@@ -313,7 +313,74 @@ url: /api/v1/admin/summary?interval=daily&start_date=2024-10-29&end_date=2024-10
       "status": "AVAILABLE",
       "created_at": "2024-11-06T07:42:51.029515+03:00",
       "updated_at": "2024-11-06T07:42:51.067307+03:00"
-    },
+    }
   ]
 }
+```
+
+> ## Transaction Logs
+>
+> > **request**
+
+- **_url_**: `{{base_url}}/api/v1/sacco/transactions/history`
+- **_method:_** `POST`
+- **_headers:_**:
+  - Content-Type: `application/json`
+- **_request body:_**
+
+```json
+{
+  "email": "test@gmail.com"
+}
+```
+
+> > **response**
+
+- **_status code_**: `200`
+- **_response body_**:
+
+```json
+[
+  {
+    "email": "antonygichoya9@gmail.com",
+    "number_plate": "KBH124H",
+    "amount": {
+      "$numberDecimal": "1"
+    },
+    "status": "failed",
+    "narrative": "Tax",
+    "createdAt": "2024-11-06T02:10:24.978Z" # latest transaction
+  },
+]
+```
+
+> ## Sensor Logs
+>
+> > **request**
+
+- **_url_**: `{{base_url}}/api/v1/sacco/sensor/history`
+- **_method:_** `POST`
+- **_headers:_**:
+  - Content-Type: `application/json`
+- **_request body:_**
+
+```json
+{
+  "email": "test@gmail.com"
+}
+```
+
+> > **response**
+
+- **_status code_**: `200`
+- **_response body_**:
+
+```json
+[
+  {
+    "number_plate": "KBH124H",
+    "destination": "Kakamega",
+    "createdAt": "2024-11-06T02:10:24.132Z"
+  },
+]
 ```
