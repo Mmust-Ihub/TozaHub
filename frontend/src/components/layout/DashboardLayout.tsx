@@ -85,7 +85,8 @@ export function DashboardLayout() {
 
       if (response.status === 401) {
         console.log("Anauthorized error");
-        return <Navigate to="/login" replace />;
+        clearAuthToken();
+        window.location.href = "/login";
       }
     } catch (error) {
       console.log(error);

@@ -1,4 +1,3 @@
-
 import { BarChart3, Car, CreditCard, TrendingUp } from "lucide-react";
 import {
   Card,
@@ -10,23 +9,88 @@ import {
 import { cn } from "../../lib/utils";
 import useAuthToken from "../../hooks/useAuth";
 import { Navigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 export function DashboardPage() {
-   const { getItem} = useAuthToken();
-   const { token, isRole } = getItem();
- if (!token || !isRole) {
-   return <Navigate to="/login" replace />;
- }
- const role = isRole ? "GENERAL_ADMIN" : "SACCO_ADMIN";
+  const [balance, setBalance] = useState();
+  const [vehicleCount, setVehicleCount] = useState();
+  const { getItem, clearAuthToken } = useAuthToken();
+  const { token, isRole } = getItem();
+  if (!token || !isRole) {
+    return <Navigate to="/login" replace />;
+  }
+
+  useEffect(() => {
+    fetchVehicles();
+    fetchBalance();
+  }, []);
+  const fetchVehicles = async () => {
+    console.log("called");
+    try {
+      const response = await fetch("https://toza-hub.vercel.app/api/vehicle", {
+        method: "GET",
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setVehicleCount(data?.length);
+      }
+
+      if (response.status === 401) {
+        console.log("Anauthorized error");
+        clearAuthToken();
+        window.location.href = "/login";
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchBalance = async () => {
+    try {
+      const response = await fetch(
+        "https://toza-hub-server.vercel.app/api/v1/admin/balance",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setBalance(data?.current_balance);
+        console.log(data);
+      }
+      if (response.status === 401) {
+        clearAuthToken();
+        window.location.href = "/login";
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+ 
+
+  const role = isRole ? "GENERAL_ADMIN" : "SACCO_ADMIN";
   const stats = {
     GENERAL_ADMIN: [
       {
         name: "Total Revenue",
-        value: "KES 2.4M",
+        value: `${balance ? "KES " + balance : ""}`,
         icon: TrendingUp,
         change: "+12.5%",
       },
-      { name: "Active Vehicles", value: "1,234", icon: Car, change: "+3.2%" },
+      {
+        name: "Active Vehicles",
+        value: `${vehicleCount ? vehicleCount : ""}`,
+        icon: Car,
+        change: "+3.2%",
+      },
       {
         name: "Pending Payments",
         value: "45",
