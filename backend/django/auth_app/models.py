@@ -6,6 +6,12 @@ from django.contrib.auth.models import (
 )
 import uuid
 
+ROLES = [
+    ("sacco_admin", "Sacco-Admin"),
+    ("gov_admin", "Gov-Admin"),
+    ("sys_admin", "Sys-Admin"),
+]
+
 
 class UserManager(BaseUserManager):
     def create_user(self, email, username, password=None, **extra_fields):
@@ -51,6 +57,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=150, blank=True)
     is_superuser = models.BooleanField(default=False)
     is_sacco_admin = models.BooleanField(default=False)
+    role = models.CharField(
+        choices=ROLES,
+        max_length=15,
+        default="sacco_admin",
+    )
     objects = UserManager()
     USERNAME_FIELD = "username"
     REQUIRED_FIELDS = ["email"]
