@@ -99,7 +99,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
                 value={
                     "access": "your_access_token",
                     "refresh": "your_refresh_token",
-                    "role": "role",
+                    "role": "role # sacco_admin, gov_admin, sys_admin",
                 },
                 response_only=True,
             ),
