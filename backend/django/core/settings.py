@@ -76,6 +76,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:5173",
     "http://localhost:5174",
+    "https://toza-hub-rust.vercel.app"
 ]
 
 # Database
