@@ -9,7 +9,7 @@ class UserAdmin(admin.ModelAdmin):
         "username",
         "first_name",
         "last_name",
-        "is_sacco_admin"
+        "is_sacco_admin","role",
     ]
 
 
