@@ -1,3 +1,4 @@
+
 import {
   BarChart3,
   Car,
@@ -6,6 +7,7 @@ import {
   FileText,
   TrendingUp,
 } from "lucide-react";
+
 import {
   Card,
   CardContent,
@@ -17,6 +19,7 @@ import { cn } from "../../lib/utils";
 import useAuthToken from "../../hooks/useAuth";
 import { Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+
 import { Button } from "../../components/ui/Button";
 import { Bar, Pie } from "react-chartjs-2";
 
@@ -24,6 +27,7 @@ export function DashboardPage() {
   const [selectedPeriod, setSelectedPeriod] = useState("monthly");
   const [balance, setBalance] = useState();
   const [pendindPayment, setPendingPayment] = useState();
+
   const [vehicleCount, setVehicleCount] = useState();
   const { getItem, clearAuthToken } = useAuthToken();
   const { token, isRole } = getItem();
@@ -35,6 +39,7 @@ export function DashboardPage() {
     fetchVehicles();
     fetchBalance();
   }, []);
+
 
   useEffect(() => {
     fetchSummary();
@@ -94,6 +99,7 @@ export function DashboardPage() {
     try {
       const response = await fetch(
         "http://164.92.165.41/api/v1/admin/revenue",
+
         {
           method: "GET",
           headers: {
@@ -105,6 +111,7 @@ export function DashboardPage() {
         const data = await response.json();
         setBalance(data?.revenue?.$numberDecimal);
         setPendingPayment(data?.pending);
+
         console.log(data);
       }
       if (response.status === 401) {
@@ -115,6 +122,7 @@ export function DashboardPage() {
       console.error(error);
     }
   };
+
 
   const role = isRole ? "GENERAL_ADMIN" : "SACCO_ADMIN";
   const stats = {
