@@ -1,14 +1,15 @@
 import { Router } from "express";
-import paymentRouter from "./payment.route.js";
+import agentRouter from "./agent.route.js";
 import walletRouter from "./wallet.route.js";
 import sensorRouter from "./sensor.route.js";
 import adminRouter from "./admin.route.js";
+import saccoRouter from "./sacco.route.js";
 
 const router = Router();
 const defaultRoutes = [
   {
-    path: "/payment",
-    route: paymentRouter,
+    path: "/agent",
+    route: agentRouter,
   },
   {
     path: "/wallet",
@@ -21,6 +22,10 @@ const defaultRoutes = [
   {
     path: "/admin",
     route: adminRouter,
+  },
+  {
+    path: "/sacco",
+    route: saccoRouter,
   },
 ];
 

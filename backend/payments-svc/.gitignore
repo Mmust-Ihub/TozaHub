@@ -10,6 +10,7 @@ docker-compose.prod.yaml
 test.txt
 .env.prod
 dev.js
+test.json
 nginx/nginx.conf
 # Logs
 logs

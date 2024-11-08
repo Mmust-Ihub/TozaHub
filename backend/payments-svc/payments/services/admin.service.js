@@ -41,9 +41,12 @@ export const getSummary = async(body) => {
     {
       $group: {
         _id: getGroupingId(interval),
-        total_transactions: { $count: {} },
+        total_transactions: { $sum: 1},
         successful_transactions: {
           $sum: { $cond: [{ $eq: ["$status", "success"] }, 1, 0] },
+        },
+        pending_transactions: {
+          $sum: { $cond: [{ $eq: ["$status", "failed"] }, 1, 0] },
         },
         total_amount_collected: {
           $sum: { $cond: [{ $eq: ["$status", "success"] }, "$amount", 0] },
@@ -55,6 +58,34 @@ export const getSummary = async(body) => {
   const results = await transactionModel.aggregate(pipeline)
   return results
 };
+
+export const getRevenue = async() => {
+  const revenuePipeline = [
+    {$match: {"status": "success"}},
+    {$group: {
+      _id: null,
+      revenue: {$sum: "$amount"}
+    }},
+    {$project: {
+      _id: 0,
+      revenue: 1
+    }}
+  ]
+  const pendingPipeline = [
+    {$match: {"status": "failed"}},
+    {$group: {
+      _id: null,
+      pending: {$sum: 1}
+    }},
+    {$project: {
+      _id: 0,
+      pending: 1
+    }}
+  ]
+  const revenue = await transactionModel.aggregate(revenuePipeline)
+  const pending = await transactionModel.aggregate(pendingPipeline)
+  return {...revenue[0], ...pending[0]}
+}
 
 export const withdraw = async(body) => {
   const resp = await payouts.mpesa({

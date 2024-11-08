@@ -1,70 +1,77 @@
+# This compose file makes it easier to run the frontend and payment services locally while making changes.
 services:
   payment:
-    image: banditantony9/payment:latest
+    build: ./backend/payments-svc/
     container_name: payment
-    pull_policy: always
     env_file:
-      - path: ./.env
+      - path: ./backend/payments-svc/.env
         required: true
     expose:
       - 3000
+    ports:
+      - "3000:3000"
     environment:
       MONGODB_URL: mongodb://admin:password@mongodb:27017
       MONGODB_NAME: Toza
-      NODE_ENV: production
+      NODE_ENV: development
       REDIS_URL: redis://redis:6379
-    command: npm start
+    command: npm run dev
     depends_on:
       - mongodb
       - redis
-      - nginx
     networks:
       - toza
     restart: always
+    volumes:
+      - ./backend/payments-svc/:/usr/src/app
     stdin_open: true
     tty: true
 
   worker:
-    image: banditantony9/payment:latest
+    build: ./backend/payments-svc/
     container_name: worker
-    pull_policy: always
     env_file:
-      - path: ./.env
+      - path: ./backend/payments-svc/.env
         required: true
     environment:
       MONGODB_URL: mongodb://admin:password@mongodb:27017
       MONGODB_NAME: Toza
-      NODE_ENV: production
+      NODE_ENV: development
       REDIS_URL: redis://redis:6379
     command: npm run worker
     depends_on:
       - payment
     networks:
       - toza
+    volumes:
+      - ./backend/payments-svc/:/usr/src/app
     restart: always
     stdin_open: true
     tty: true
 
-  nginx:
+  frontend:
     build:
-      context: ./nginx
+      context: ./frontend
       dockerfile: dev.Dockerfile
-    container_name: nginx
+    container_name: frontend
     restart: always
     ports:
       - "80:80"
     networks:
       - toza
+    volumes:
+      - ./frontend/:/app
+    depends_on:
+      - payment
     stdin_open: true
     tty: true
+
 
   redis:
     image: redis
     container_name: redis
-    restart: always
     command: ["redis-server", "--appendonly", "yes"]
-    expose:
-      - 6379
+    restart: always
     ports:
       - "6379:6379"
     networks:
@@ -87,6 +94,24 @@ services:
       - toza
     volumes:
       - toza-data:/data/db
+    stdin_open: true
+    tty: true
+
+  mongo-express:
+    restart: always
+    image: mongo-express
+    container_name: express-cont
+    ports:
+      - "8081:8081"
+    networks:
+      - toza
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: password
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_MONGODB_URL: mongodb://admin:password@mongodb:27017/
+    depends_on:
+      - mongodb
     stdin_open: true
     tty: true
 

@@ -1,10 +1,11 @@
+# This compose file deploys both the frontend and payment service
 services:
   payment:
     image: banditantony9/payment:latest
     container_name: payment
     pull_policy: always
     env_file:
-      - path: ./.env
+      - path: ./backend/payments-svc/.env.prod
         required: true
     expose:
       - 3000
@@ -13,11 +14,10 @@ services:
       MONGODB_NAME: Toza
       NODE_ENV: production
       REDIS_URL: redis://redis:6379
-    command: npm start
+    command: npm run dev
     depends_on:
       - mongodb
       - redis
-      - nginx
     networks:
       - toza
     restart: always
@@ -29,7 +29,7 @@ services:
     container_name: worker
     pull_policy: always
     env_file:
-      - path: ./.env
+      - path: ./backend/payments-svc/.env.prod
         required: true
     environment:
       MONGODB_URL: mongodb://admin:password@mongodb:27017
@@ -41,30 +41,32 @@ services:
       - payment
     networks:
       - toza
+    volumes:
+      - ./backend/payments-svc/:/usr/src/app
     restart: always
     stdin_open: true
     tty: true
 
-  nginx:
-    build:
-      context: ./nginx
-      dockerfile: dev.Dockerfile
-    container_name: nginx
+  frontend:
+    image: banditantony9/tozafrontend:latest
+    container_name: frontend
+    pull_policy: always
     restart: always
     ports:
       - "80:80"
     networks:
       - toza
+    depends_on:
+      - payment
     stdin_open: true
     tty: true
+
 
   redis:
     image: redis
     container_name: redis
-    restart: always
     command: ["redis-server", "--appendonly", "yes"]
-    expose:
-      - 6379
+    restart: always
     ports:
       - "6379:6379"
     networks:

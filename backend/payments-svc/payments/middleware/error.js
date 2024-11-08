@@ -18,6 +18,7 @@ export const errorConverter = (err, req, res, next) => {
 };
 
 export const errorHandler = (err, req, res, next) => {
+  logger.error(`This is the error: ${err}`)
   const { statusCode, message } = err;
   if (config.env === "production" && !err.isOperational) {
     statusCode = httpStatus.INTERNAL_SERVER_ERROR;

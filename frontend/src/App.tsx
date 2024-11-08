@@ -7,10 +7,14 @@ import { DashboardPage } from "./pages/dashboard/DashboardPage";
 import { VehiclesPage } from "./pages/vehicles/VehiclesPage";
 import { PaymentsPage } from "./pages/payments/PaymentsPage";
 import { SettingsPage } from "./pages/settings/SettingsPage";
+import PaymentRatesPage from "./pages/admin/PaymentRatesPage";
+import UsersPage from "./pages/admin/UsersPage";
+import RegistryPage from "./pages/government/RegistryPage";
+import ReportsPage from "./pages/government/ReportsPage";
 
 const queryClient = new QueryClient();
 
-function App() {
+export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
@@ -23,6 +27,10 @@ function App() {
             <Route path="vehicles" element={<VehiclesPage />} />
             <Route path="payments" element={<PaymentsPage />} />
             <Route path="settings" element={<SettingsPage />} />
+            <Route path="payment-rates" element={<PaymentRatesPage />} />
+            <Route path="users" element={<UsersPage />} />
+            <Route path="registry" element={<RegistryPage />} />
+            <Route path="reports" element={<ReportsPage />} />
           </Route>
         </Routes>
       </BrowserRouter>
@@ -30,5 +38,3 @@ function App() {
     </QueryClientProvider>
   );
 }
-
-export default App;
