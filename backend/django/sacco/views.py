@@ -100,7 +100,7 @@ class VehicleViewSet(ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         user = request.user
-        if user.is_sacco_admin:
+        if user.role == "sacco_admin":
             sacco = Sacco.objects.get(admin=user)
             self.queryset = Vehicle.objects.filter(sacco=sacco)
         return super().list(request, *args, **kwargs)
@@ -160,7 +160,7 @@ class VehicleViewSet(ModelViewSet):
     )
     def create(self, request, *args, **kwargs):
         user = request.user
-        if user.is_sacco_admin:
+        if user.role == "sacco_admin":
             sacco = Sacco.objects.get(admin=user)
             request.data["sacco"] = sacco.id
             return super().create(request, *args, **kwargs)

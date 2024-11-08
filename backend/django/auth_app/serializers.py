@@ -14,7 +14,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
             "username",
             "first_name",
             "last_name",
-            "is_sacco_admin",
+            "role",
         ]
 
 
@@ -73,5 +73,5 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
         token["username"] = user.username
         token["email"] = user.email
-        token["is_sacco_admin"] = user.is_sacco_admin
+        token["role"] = user.role
         return token

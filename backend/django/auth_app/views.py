@@ -57,7 +57,7 @@ class UserCreateApiView(CreateAPIView):
     )
     def post(self, request, *args, **kwargs):
         data = request.data
-        data["is_sacco_admin"] = True
+        # data["is_sacco_admin"] = True
         serializer = UserRegistrationSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
@@ -73,7 +73,7 @@ class UserCreateApiView(CreateAPIView):
 @api_view(["POST"])
 def signup(request):
     data = request.data
-    data["is_sacco_admin"] = True
+    # data["is_sacco_admin"] = True
     serializer = UserRegistrationSerializer(data=data)
     if serializer.is_valid():
         serializer.save()
@@ -99,7 +99,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
                 value={
                     "access": "your_access_token",
                     "refresh": "your_refresh_token",
-                    "is_sacco_admin": "boolean",
+                    "role": "role",
                 },
                 response_only=True,
             ),
@@ -109,7 +109,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
         try:
             user = User.objects.get(username=request.data["username"])
             response = super().post(request, *args, **kwargs)
-            response.data["is_sacco_admin"] = user.is_sacco_admin
+            response.data["role"] = user.role
             return Response(response.data)
         except User.DoesNotExist:
             return Response(
