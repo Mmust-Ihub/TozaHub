@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Car, Plus, Search } from "lucide-react";
 import { Button } from "../../components/ui/Button";
 import {
@@ -9,6 +9,8 @@ import {
 } from "../../components/ui/Card";
 import { VehicleRegistrationModal } from "./VehicleRegistrationModal";
 import type { Vehicle } from "../../lib/types";
+import useAuthToken from "../../hooks/useAuth";
+
 
 export function VehiclesPage() {
   const [showRegistrationModal, setShowRegistrationModal] = useState(false);
@@ -38,6 +40,27 @@ export function VehiclesPage() {
       lastPaymentDate: "2024-02-01",
     },
   ]);
+  const { getItem } = useAuthToken();
+  const { token } = getItem();
+
+  useEffect(()=>{
+    const fetchVehicles = async()=>{
+      const response = await fetch(`https://toza-hub.vercel.app/api/vehicles/me`,{
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+      })
+
+      const data = await response.json()
+
+      if(data){
+        setVehicles(data)
+      }
+    }
+
+    fetchVehicles()
+  })
 
   const handleRegisterVehicle = async (data: any) => {
     const newVehicle: Vehicle = {

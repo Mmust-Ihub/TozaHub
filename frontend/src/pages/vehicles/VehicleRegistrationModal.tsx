@@ -5,13 +5,13 @@ import { z } from "zod";
 import { X } from "lucide-react";
 import { Button } from "../../components/ui/Button";
 import { Card } from "../../components/ui/Card";
+import toast from "react-hot-toast";
+import useAuthToken from "../../hooks/useAuth";
+
 
 const vehicleSchema = z.object({
   number_plate: z.string().min(6).max(8),
-  type: z.enum(["BUS", "MATATU", "TAXI"]),
-  capacity: z.number().min(4).max(62),
   driver: z.string().min(3),
-  route: z.string().min(3),
 });
 
 type VehicleFormData = z.infer<typeof vehicleSchema>;
@@ -21,7 +21,7 @@ interface Props {
   onSubmit: (data: VehicleFormData) => void;
 }
 
-export function VehicleRegistrationModal({ onClose, onSubmit }: Props) {
+export function VehicleRegistrationModal({ onClose}: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const {
     register,
@@ -31,12 +31,37 @@ export function VehicleRegistrationModal({ onClose, onSubmit }: Props) {
     resolver: zodResolver(vehicleSchema),
   });
 
+  const { getItem } = useAuthToken();
+  const { token } = getItem();
+
   const handleFormSubmit = async (data: VehicleFormData) => {
     setIsLoading(true);
     try {
-      await onSubmit(data);
+     const response = await fetch(`https://toza-hub.vercel.app/api/vehicle`,{
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${token}`,
+
+      },
+    })
+
+      if(response.ok){
+          toast.success("Vehicle successfully registered")
+          onClose();
+      }else{
+        toast.error("Couldn't register vehicle")
+        onClose();
+      }
+      
+     }catch(error){
+      console.error("Error creating Vehicle",error)
+      toast.error("Server Side Error")
       onClose();
-    } finally {
+
+     }
+     finally {
       setIsLoading(false);
     }
   };
@@ -48,6 +73,8 @@ export function VehicleRegistrationModal({ onClose, onSubmit }: Props) {
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-semibold">Register New Vehicle</h2>
             <button
+              type="button"
+              title="close"
               onClick={onClose}
               className="text-gray-500 hover:text-gray-700"
             >
@@ -61,82 +88,35 @@ export function VehicleRegistrationModal({ onClose, onSubmit }: Props) {
                 Plate Number
               </label>
               <input
-                {...register("plateNumber")}
+                {...register("number_plate")}
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
                 placeholder="KXX 000X"
               />
-              {errors.plateNumber && (
+              {errors.number_plate && (
                 <p className="mt-1 text-sm text-red-600">
-                  {errors.plateNumber.message}
+                  {errors.number_plate.message}
                 </p>
               )}
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Vehicle Type
-              </label>
-              <select
-                {...register("type")}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
-              >
-                <option value="MATATU">Matatu</option>
-                <option value="BUS">Bus</option>
-                <option value="TAXI">Taxi</option>
-              </select>
-              {errors.type && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.type.message}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Capacity
-              </label>
-              <input
-                type="number"
-                {...register("capacity", { valueAsNumber: true })}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
-              />
-              {errors.capacity && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.capacity.message}
-                </p>
-              )}
-            </div>
+          
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Owner Name
               </label>
               <input
-                {...register("owner")}
+                {...register("driver")}
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
               />
-              {errors.owner && (
+              {errors.driver && (
                 <p className="mt-1 text-sm text-red-600">
-                  {errors.owner.message}
+                  {errors.driver.message}
                 </p>
               )}
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Route
-              </label>
-              <input
-                {...register("route")}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
-                placeholder="e.g., CBD - Westlands"
-              />
-              {errors.route && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.route.message}
-                </p>
-              )}
-            </div>
+           
 
             <div className="flex justify-end space-x-3 pt-4">
               <Button type="button" variant="secondary" onClick={onClose}>

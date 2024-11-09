@@ -80,8 +80,8 @@ export function DashboardLayout() {
 
       if (response.ok) {
         const data = await response.json();
-        console.log(data);
         setUser(data);
+        localStorage.setItem("email",data?.email)
       }
 
       if (response.status === 401) {

@@ -40,6 +40,7 @@ export function LoginPage() {
         const data = await response.json();
         localStorage.setItem("tozaAuth", data?.access);
         localStorage.setItem("tozaRole", (data?.role));
+
         // data?.is_sacco_admin ? navigate("/sacco") : navigate("/dashboard");
         navigate("/dashboard");
       }

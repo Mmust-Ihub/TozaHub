@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BarChart, CreditCard, Search } from "lucide-react";
 import { Button } from "../../components/ui/Button";
 import {
@@ -28,7 +28,20 @@ ChartJS.register(
   Legend
 );
 
+import useAuthToken from "../../hooks/useAuth";
+
+type Summary = {
+  current_balance: number;
+  totalUnpaid: { $numberDecimal: string };
+  pending: number;
+};
+
 export function PaymentsPage() {
+  const { getItem } = useAuthToken();
+  const { token} = getItem();
+  const [summary, setSummary] = useState<Summary | null>(null);
+
+
   const [payments] = useState<Payment[]>([
     {
       id: "1",
@@ -70,6 +83,26 @@ export function PaymentsPage() {
       balance: 47500,
     },
   ]);
+
+  const fetchSummary = async()=>{
+    const response = await fetch(`http://164.92.165.41/api/v1/sacco/summary`,{
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+    })
+
+    const data = await response.json()
+
+    if(data){
+      setSummary(data)
+      console.log(data)
+    }
+  }
+
+  useEffect(()=>{
+    fetchSummary()
+  },[])
 
   const chartData = {
     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
@@ -119,7 +152,7 @@ export function PaymentsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">KES 47,500</div>
+            <div className="text-2xl font-bold">KES {summary?.current_balance || 0}</div>
             <p className="text-xs text-gray-500">Available funds</p>
           </CardContent>
         </Card>
@@ -143,7 +176,7 @@ export function PaymentsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">5</div>
+            <div className="text-2xl font-bold">{summary?.pending || 0}</div>
             <p className="text-xs text-gray-500">Vehicles with due payments</p>
           </CardContent>
         </Card>
