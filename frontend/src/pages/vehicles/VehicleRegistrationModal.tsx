@@ -7,10 +7,10 @@ import { Button } from "../../components/ui/Button";
 import { Card } from "../../components/ui/Card";
 
 const vehicleSchema = z.object({
-  plateNumber: z.string().min(6).max(8),
+  number_plate: z.string().min(6).max(8),
   type: z.enum(["BUS", "MATATU", "TAXI"]),
   capacity: z.number().min(4).max(62),
-  owner: z.string().min(3),
+  driver: z.string().min(3),
   route: z.string().min(3),
 });
 

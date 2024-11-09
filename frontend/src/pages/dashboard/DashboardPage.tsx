@@ -124,9 +124,9 @@ export function DashboardPage() {
   };
 
 
-  const role = isRole ? "GENERAL_ADMIN" : "SACCO_ADMIN";
+  const role = isRole
   const stats = {
-    GENERAL_ADMIN: [
+    sys_admin: [
       {
         name: "Total Revenue",
         value: `${balance ? "KES " + balance : ""}`,
@@ -152,7 +152,7 @@ export function DashboardPage() {
         change: "+2.3%",
       },
     ],
-    SACCO_ADMIN: [
+    sacco_admin: [
       {
         name: "Monthly Revenue",
         value: "KES 450K",

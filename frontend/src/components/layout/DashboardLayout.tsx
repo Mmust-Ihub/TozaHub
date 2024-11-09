@@ -27,13 +27,13 @@ type user = {
 };
 
 const navigation = {
-  GENERAL_ADMIN: [
+  sys_admin: [
     { name: "Dashboard", href: "/dashboard", icon: BarChart3 },
     { name: "Payment Rates", href: "/payment-rates", icon: CreditCard },
     { name: "Users", href: "/users", icon: Users },
     { name: "Settings", href: "/settings", icon: Settings },
   ],
-  SACCO_ADMIN: [
+  sacco_admin: [
     { name: "Dashboard", href: "/dashboard", icon: BarChart3 },
     { name: "Vehicles", href: "/vehicles", icon: Car },
     { name: "Payments", href: "/payments", icon: CreditCard },
@@ -59,7 +59,8 @@ export function DashboardLayout() {
   if (!token || !isRole) {
     return <Navigate to="/login" replace />;
   }
-  const role = isRole ? "GENERAL_ADMIN" : "GOVERNMENT_AGENT";
+  const role = isRole
+
   useEffect(() => {
     fetchUser();
   }, [token, isRole]);
