@@ -76,7 +76,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://localhost:5173",
     "http://localhost:5174",
-    "https://toza-hub-rust.vercel.app",
+    "https://toza-hub-rust.vercel.app"
 ]
 
 # Database
@@ -112,21 +112,16 @@ if DEVELOPMENT_MODE:
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": (
-            "django.contrib.auth.password_validation."
-            "UserAttributeSimilarityValidator"
-        ),
+            "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"),
     },
     {
-        "NAME": ("django.contrib.auth.password_validation."
-                 "MinimumLengthValidator",),
+        "NAME": ("django.contrib.auth.password_validation.MinimumLengthValidator"),
     },
     {
-        "NAME": ("django.contrib.auth.password_validation."
-                 "CommonPasswordValidator"),
+        "NAME": ("django.contrib.auth.password_validation.CommonPasswordValidator"),
     },
     {
-        "NAME": ("django.contrib.auth.password_validation."
-                 "NumericPasswordValidator"),
+        "NAME": ("django.contrib.auth.password_validation.NumericPasswordValidator"),
     },
 ]
 
