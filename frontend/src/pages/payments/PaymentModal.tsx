@@ -8,63 +8,68 @@ import { Card } from "../../components/ui/Card";
 import toast from "react-hot-toast";
 import useAuthToken from "../../hooks/useAuth";
 
-
-const vehicleSchema = z.object({
-  number_plate: z.string().min(6).max(8),
-  driver: z.string().min(3),
+const paymentSchema = z.object({
+  amount: z.number().min(1).max(100000),
+  phone_number: z
+  .number()
+  .min(10000000000, { message: "Phone number must be at least 10 digits" }) // Adjust min/max if needed
+  .max(999999999999, { message: "Phone number can't exceed 10 digits" }),
+   email: z.string().email().optional(),
 });
 
-type VehicleFormData = z.infer<typeof vehicleSchema>;
+type PaymentFormData = z.infer<typeof paymentSchema>;
 
 interface Props {
   onClose: () => void;
-  onSubmit: (data: VehicleFormData) => void;
+  onSubmit: (data: PaymentFormData) => void;
 }
 
-export function VehicleRegistrationModal({ onClose}: Props) {
+export function PaymentModal({ onClose }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<VehicleFormData>({
-    resolver: zodResolver(vehicleSchema),
+  } = useForm<PaymentFormData>({
+    resolver: zodResolver(paymentSchema),
   });
 
   const { getItem } = useAuthToken();
-  const { token } = getItem();
+  const { token, email } = getItem();
 
-  const handleFormSubmit = async (data: VehicleFormData) => {
+  const handleFormSubmit = async (data: PaymentFormData) => {
     setIsLoading(true);
+
+    const dataWithEmail = { ...data, email };
+
+    console.log(dataWithEmail);
+
     try {
-     const response = await fetch(`https://toza-hub.vercel.app/api/vehicle`,{
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-type": "application/json",
-        Authorization: `Bearer ${token}`,
+      const response = await fetch(`http://164.92.165.41/api/v1/sacco/topup`, {
+        method: "POST",
+        body: JSON.stringify(dataWithEmail),
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-      },
-    })
+      const datas = await response.text();
 
- 
+      console.log("Datas",datas);
 
-
-      if(response.ok){
-          toast.success("Vehicle successfully registered")
-          onClose();
-      }else{
-        toast.error("Couldn't register vehicle")
+      if (response.ok) {
+        toast.success("Payment successfully done!");
+        onClose();
+      } else {
+        toast.error("Couldn't process payment ");
         onClose();
       }
-      
-     }catch(error){
-      console.error("Error creating Vehicle",error)
-      toast.error("Server Side Error")
-      // onClose();
-
-     }
-     finally {
+    } catch (error) {
+      console.error("Error processing payment", error);
+      toast.error("Server Side Error");
+      //   onClose();
+    } finally {
       setIsLoading(false);
     }
   };
@@ -74,13 +79,12 @@ export function VehicleRegistrationModal({ onClose}: Props) {
       <Card className="w-full max-w-md">
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold">Register New Vehicle</h2>
+            <h2 className="text-xl font-semibold">Process New Payment</h2>
             <button
               type="button"
               title="close"
               onClick={onClose}
-              className="text-gray-500 hover:text-gray-700"
-            >
+              className="text-gray-500 hover:text-gray-700">
               <X className="h-5 w-5" />
             </button>
           </div>
@@ -88,45 +92,42 @@ export function VehicleRegistrationModal({ onClose}: Props) {
           <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                Plate Number
+                Amount to pay
               </label>
               <input
-                {...register("number_plate")}
+                {...register("amount", { valueAsNumber: true })}
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
-                placeholder="KXX 000X"
+                placeholder="Amount to pay"
               />
-              {errors.number_plate && (
+              {errors.amount && (
                 <p className="mt-1 text-sm text-red-600">
-                  {errors.number_plate.message}
+                  {errors.amount.message}
                 </p>
               )}
             </div>
-
-          
 
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                Owner Name
+                Phone Number
               </label>
               <input
-                {...register("driver")}
+                {...register("phone_number", { valueAsNumber: true })}
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
+                placeholder="254********"
               />
-              {errors.driver && (
+              {errors.phone_number && (
                 <p className="mt-1 text-sm text-red-600">
-                  {errors.driver.message}
+                  {errors.phone_number.message}
                 </p>
               )}
             </div>
-
-           
 
             <div className="flex justify-end space-x-3 pt-4">
               <Button type="button" variant="secondary" onClick={onClose}>
                 Cancel
               </Button>
               <Button type="submit" isLoading={isLoading}>
-                Register Vehicle
+                Process Payment
               </Button>
             </div>
           </form>

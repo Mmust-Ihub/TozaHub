@@ -45,17 +45,20 @@ export function VehiclesPage() {
 
   useEffect(()=>{
     const fetchVehicles = async()=>{
-      const response = await fetch(`https://toza-hub.vercel.app/api/vehicles/me`,{
+      const response = await fetch(`https://toza-hub.vercel.app/api/vehicle`,{
           method: "GET",
           headers: {
+            "Content-type": "application/json",
             Authorization: `Bearer ${token}`,
           },
       })
 
-      const data = await response.json()
+      const newVehicle = await response.json()
 
-      if(data){
-        setVehicles(data)
+
+      if(response.ok){
+        setVehicles((prev) =>[...prev,newVehicle]
+         )
       }
     }
 
@@ -159,9 +162,9 @@ export function VehiclesPage() {
                   <th className="px-6 py-3">Type</th>
                   <th className="px-6 py-3">Capacity</th>
                   <th className="px-6 py-3">Owner</th>
-                  <th className="px-6 py-3">Route</th>
+                  {/* <th className="px-6 py-3">Route</th>
                   <th className="px-6 py-3">Status</th>
-                  <th className="px-6 py-3">Last Payment</th>
+                  <th className="px-6 py-3">Last Payment</th> */}
                   <th className="px-6 py-3">Actions</th>
                 </tr>
               </thead>
@@ -177,13 +180,13 @@ export function VehiclesPage() {
                     <td className="px-6 py-4">{vehicle.type}</td>
                     <td className="px-6 py-4">{vehicle.capacity}</td>
                     <td className="px-6 py-4">{vehicle.owner}</td>
-                    <td className="px-6 py-4">{vehicle.route}</td>
+                    {/* <td className="px-6 py-4">{vehicle.route}</td>
                     <td className="px-6 py-4">
                       <span className="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
                         {vehicle.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4">{vehicle.lastPaymentDate}</td>
+                    <td className="px-6 py-4">{vehicle.lastPaymentDate}</td> */}
                     <td className="px-6 py-4">
                       <Button variant="ghost" size="sm">
                         View

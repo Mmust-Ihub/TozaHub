@@ -29,6 +29,7 @@ ChartJS.register(
 );
 
 import useAuthToken from "../../hooks/useAuth";
+import { PaymentModal } from "./PaymentModal";
 
 type Summary = {
   current_balance: number;
@@ -40,6 +41,8 @@ export function PaymentsPage() {
   const { getItem } = useAuthToken();
   const { token} = getItem();
   const [summary, setSummary] = useState<Summary | null>(null);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+
 
 
   const [payments] = useState<Payment[]>([
@@ -63,7 +66,7 @@ export function PaymentsPage() {
     },
   ]);
 
-  const [transactions] = useState<Transaction[]>([
+  const [transactions,setTransactions] = useState<Transaction[]>([
     {
       id: "1",
       saccoId: "SACCO001",
@@ -92,11 +95,12 @@ export function PaymentsPage() {
         },
     })
 
-    const data = await response.json()
+    const newSummary = await response.json()
 
-    if(data){
-      setSummary(data)
-      console.log(data)
+
+
+    if(response.ok){
+      setSummary(newSummary)
     }
   }
 
@@ -127,6 +131,19 @@ export function PaymentsPage() {
     },
   };
 
+  const handleNewPayment = async (data: any) => {
+    const newTransaction: Transaction = {
+      id: (transactions.length + 1).toString(),
+      ...data,
+      saccoId: "SACCO001",
+      description: "Account recharge",
+      date: new Date().toISOString().split("T")[0],
+      balance:10000,
+      type:'DEBIT'
+    };
+    setTransactions([...transactions, newTransaction]);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -138,7 +155,7 @@ export function PaymentsPage() {
             Track payments, transactions, and financial reports
           </p>
         </div>
-        <Button>
+        <Button onClick={() => setShowPaymentModal(true)}>
           <CreditCard className="mr-2 h-4 w-4" />
           Record Payment
         </Button>
@@ -296,6 +313,13 @@ export function PaymentsPage() {
             </div>
           </CardContent>
         </Card>
+
+        {showPaymentModal && (
+        <PaymentModal
+          onClose={() => setShowPaymentModal(false)}
+          onSubmit={handleNewPayment}
+        />
+      )}
       </div>
     </div>
   );

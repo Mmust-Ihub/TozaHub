@@ -112,7 +112,6 @@ export function DashboardPage() {
         setBalance(data?.revenue?.$numberDecimal);
         setPendingPayment(data?.pending);
 
-        console.log(data);
       }
       if (response.status === 401) {
         clearAuthToken();
