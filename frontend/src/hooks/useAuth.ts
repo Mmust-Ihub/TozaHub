@@ -3,11 +3,11 @@ const useAuthToken = () => {
     if (typeof window !== "undefined") {
       const token = localStorage?.getItem("tozaAuth");
       const isRole = localStorage?.getItem("tozaRole");
-      const email = localStorage?.getItem('email')
+      const userEmail = localStorage?.getItem('email')
 
-      return { token, isRole,email }; // Return an object with token and chatid prod
+      return { token, isRole,userEmail }; // Return an object with token and chatid prod
     } else {
-      return { token: null, isRole: null,email:null }; //prod
+      return { token: null, isRole: null,userEmail:null }; //prod
     }
     // return { token: null }; // Return null if localStorage is not available
   };

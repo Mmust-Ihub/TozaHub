@@ -39,9 +39,12 @@ type Summary = {
 
 export function PaymentsPage() {
   const { getItem } = useAuthToken();
-  const { token} = getItem();
+  const { token,userEmail} = getItem();
   const [summary, setSummary] = useState<Summary | null>(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [email,setEmail] = useState({
+      "email":"omoshjoe02@gmail.com"
+  })
 
 
 
@@ -88,14 +91,18 @@ export function PaymentsPage() {
   ]);
 
   const fetchSummary = async()=>{
-    const response = await fetch(`http://164.92.165.41/api/v1/sacco/summary`,{
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-    })
+    const response = await fetch('http://164.92.165.41/api/v1/sacco/summary', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({"email": "omoshjoe02@gmail.com"})
+    });
 
     const newSummary = await response.json()
+
+    console.log(newSummary)
 
 
 

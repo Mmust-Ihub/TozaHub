@@ -117,7 +117,7 @@ export function DashboardPage() {
         clearAuthToken();
         window.location.href = "/login";
       }
-    } catch (error) {
+    } catch (error) { 
       console.error(error);
     }
   };

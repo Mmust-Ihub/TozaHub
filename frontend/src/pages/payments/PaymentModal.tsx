@@ -10,10 +10,7 @@ import useAuthToken from "../../hooks/useAuth";
 
 const paymentSchema = z.object({
   amount: z.number().min(1).max(100000),
-  phone_number: z
-  .number()
-  .min(10000000000, { message: "Phone number must be at least 10 digits" }) // Adjust min/max if needed
-  .max(999999999999, { message: "Phone number can't exceed 10 digits" }),
+  phone_number: z.string(),
    email: z.string().email().optional(),
 });
 
@@ -35,7 +32,8 @@ export function PaymentModal({ onClose }: Props) {
   });
 
   const { getItem } = useAuthToken();
-  const { token, email } = getItem();
+  const { token, userEmail } = getItem();
+  const email = "omoshjoe02@gmail.com"
 
   const handleFormSubmit = async (data: PaymentFormData) => {
     setIsLoading(true);
@@ -49,14 +47,13 @@ export function PaymentModal({ onClose }: Props) {
         method: "POST",
         body: JSON.stringify(dataWithEmail),
         headers: {
+          'Accept': 'application/json',
           "Content-type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
 
-      const datas = await response.text();
 
-      console.log("Datas",datas);
 
       if (response.ok) {
         toast.success("Payment successfully done!");
@@ -111,7 +108,7 @@ export function PaymentModal({ onClose }: Props) {
                 Phone Number
               </label>
               <input
-                {...register("phone_number", { valueAsNumber: true })}
+                {...register("phone_number")}
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2"
                 placeholder="254********"
               />
