@@ -20,26 +20,26 @@ export type Vehicle = {
 };
 
 export type Payment = {
-  id: string;
-  vehicleId: string;
-  amount: number;
-  status: 'PENDING' | 'COMPLETED' | 'FAILED';
-  date: string;
-  type: 'MONTHLY' | 'ANNUAL' | 'PENALTY';
-  reference: string;
+  id: string; // Assuming you want to generate an ID for your transactions
+  number_plate: string; // Corresponds to "number_plate" in the API response
+  amount: {$numberDecimal:number}; // Convert "$numberDecimal" to a number
+  status:  'success' | 'failed'; // Match the "status" in the response
+  createdAt: string; // Use "createdAt" as the date
+  type: 'MONTHLY' | 'ANNUAL' | 'PENALTY' | 'TAX'; // Add "TAX" to the types
+  narrative: string; // Add "narrative" from the response
 };
 
 export type Transaction = {
-  transaction_id: string; // matches "transaction_id" in response
-  invoice: string | null; // "invoice" can be null
-  currency: string; // "currency" field
-  value: number; // corresponds to "value"
-  running_balance: number; // matches "running_balance"
-  narrative: string; // corresponds to "narrative"
-  trans_type:"SALE" | 'CHARGE'; // map "trans_type"
-  status: string; // "status" field
-  created_at: string; // matches "created_at" timestamp
-  updated_at: string; // matches "updated_at" timestamp
+  transaction_id: string; 
+  invoice: string | null; 
+  currency: string; 
+  value: number; 
+  running_balance: number; 
+  narrative: string; 
+  trans_type:"SALE" | 'CHARGE'; 
+  status: string; 
+  created_at: string; 
+  updated_at: string; 
 };
 
 export type SaccoAccount = {

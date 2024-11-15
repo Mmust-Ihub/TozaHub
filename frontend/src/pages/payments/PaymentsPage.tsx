@@ -42,30 +42,9 @@ export function PaymentsPage() {
   const { token, userEmail } = getItem();
   const [summary, setSummary] = useState<Summary | null>(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [email, setEmail] = useState({
-    email: "omoshjoe02@gmail.com",
-  });
+ 
 
-  const [payments] = useState<Payment[]>([
-    {
-      id: "1",
-      vehicleId: "KBZ 123A",
-      amount: 2500,
-      status: "COMPLETED",
-      date: "2024-02-15",
-      type: "MONTHLY",
-      reference: "PAY-001",
-    },
-    {
-      id: "2",
-      vehicleId: "KCA 456B",
-      amount: 3000,
-      status: "PENDING",
-      date: "2024-02-16",
-      type: "MONTHLY",
-      reference: "PAY-002",
-    },
-  ]);
+  const [payments,setPayments] = useState<Payment[]>([]);
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
@@ -103,10 +82,30 @@ export function PaymentsPage() {
       setTransactions(Array.isArray(data.results) ? data.results : []);
     }
   };
+  const fetchPaymentHistory = async () => {
+    const response = await fetch(
+      "http://164.92.165.41/api/v1/sacco/transactions/history",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: "omoshjoe02@gmail.com" }),
+      }
+    );
+
+    const data = await response.json();
+    if (response.ok) {
+      setPayments(data);
+      console.log(data)
+    }
+  };
 
   useEffect(() => {
-    fetchTopUpHistory();
     fetchSummary();
+    fetchTopUpHistory();
+    fetchPaymentHistory()
   }, []);
 
   const chartData = {
@@ -223,26 +222,26 @@ export function PaymentsPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {payments.map((payment) => (
+              {payments.map((payment,index) => (
                 <div
-                  key={payment.id}
+                  key={index}
                   className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
                     <div className="rounded-full bg-blue-100 p-2">
                       <CreditCard className="h-4 w-4 text-blue-600" />
                     </div>
                     <div>
-                      <p className="font-medium">{payment.vehicleId}</p>
+                      <p className="font-medium">{payment.number_plate}</p>
                       <p className="text-sm text-gray-500">
-                        {payment.type} Payment • {payment.date}
+                        {payment.type} Payment • {new Date(payment.createdAt).toLocaleString()}
                       </p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="font-medium">KES {payment.amount}</p>
+                    <p className="font-medium">KES {payment.amount.$numberDecimal}</p>
                     <p
                       className={`text-sm ${
-                        payment.status === "COMPLETED"
+                        payment.status === "success"
                           ? "text-green-600"
                           : "text-yellow-600"
                       }`}>
