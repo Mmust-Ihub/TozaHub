@@ -57,7 +57,6 @@ class UserCreateApiView(CreateAPIView):
     )
     def post(self, request, *args, **kwargs):
         data = request.data
-        # data["is_sacco_admin"] = True
         serializer = UserRegistrationSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
@@ -73,7 +72,6 @@ class UserCreateApiView(CreateAPIView):
 @api_view(["POST"])
 def signup(request):
     data = request.data
-    # data["is_sacco_admin"] = True
     serializer = UserRegistrationSerializer(data=data)
     if serializer.is_valid():
         serializer.save()
