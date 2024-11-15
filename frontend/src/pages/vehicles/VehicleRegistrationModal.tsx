@@ -37,7 +37,7 @@ export function VehicleRegistrationModal({ onClose}: Props) {
   const handleFormSubmit = async (data: VehicleFormData) => {
     setIsLoading(true);
     try {
-     const response = await fetch(`https://toza-hub.vercel.app/api/vehicle`,{
+     const response = await fetch(`https://toza-hub.vercel.app/api/vehicle/`,{
       method: "POST",
       body: JSON.stringify(data),
       headers: {
@@ -46,11 +46,12 @@ export function VehicleRegistrationModal({ onClose}: Props) {
 
       },
     })
+   
 
- 
 
 
       if(response.ok){
+
           toast.success("Vehicle successfully registered")
           onClose();
       }else{
