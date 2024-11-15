@@ -39,14 +39,12 @@ type Summary = {
 
 export function PaymentsPage() {
   const { getItem } = useAuthToken();
-  const { token,userEmail} = getItem();
+  const { token, userEmail } = getItem();
   const [summary, setSummary] = useState<Summary | null>(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [email,setEmail] = useState({
-      "email":"omoshjoe02@gmail.com"
-  })
-
-
+  const [email, setEmail] = useState({
+    email: "omoshjoe02@gmail.com",
+  });
 
   const [payments] = useState<Payment[]>([
     {
@@ -69,51 +67,47 @@ export function PaymentsPage() {
     },
   ]);
 
-  const [transactions,setTransactions] = useState<Transaction[]>([
-    {
-      id: "1",
-      saccoId: "SACCO001",
-      amount: 50000,
-      type: "CREDIT",
-      description: "Account recharge",
-      date: "2024-02-15",
-      balance: 50000,
-    },
-    {
-      id: "2",
-      saccoId: "SACCO001",
-      amount: 2500,
-      type: "DEBIT",
-      description: "Vehicle KBZ 123A monthly payment",
-      date: "2024-02-15",
-      balance: 47500,
-    },
-  ]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
 
-  const fetchSummary = async()=>{
-    const response = await fetch('http://164.92.165.41/api/v1/sacco/summary', {
-      method: 'POST',
+  const fetchSummary = async () => {
+    const response = await fetch("http://164.92.165.41/api/v1/sacco/summary", {
+      method: "POST",
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        Accept: "application/json",
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({"email": "omoshjoe02@gmail.com"})
+      body: JSON.stringify({ email: "omoshjoe02@gmail.com" }),
     });
 
-    const newSummary = await response.json()
-
-    console.log(newSummary)
-
-
-
-    if(response.ok){
-      setSummary(newSummary)
+    const newSummary = await response.json();
+    if (response.ok) {
+      setSummary(newSummary);
     }
-  }
+  };
 
-  useEffect(()=>{
-    fetchSummary()
-  },[])
+  const fetchTopUpHistory = async () => {
+    const response = await fetch(
+      "http://164.92.165.41/api/v1/sacco/topup/history",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: "omoshjoe02@gmail.com" }),
+      }
+    );
+
+    const data = await response.json();
+    if (response.ok) {
+      setTransactions(Array.isArray(data.results) ? data.results : []);
+    }
+  };
+
+  useEffect(() => {
+    fetchTopUpHistory();
+    fetchSummary();
+  }, []);
 
   const chartData = {
     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
@@ -145,8 +139,8 @@ export function PaymentsPage() {
       saccoId: "SACCO001",
       description: "Account recharge",
       date: new Date().toISOString().split("T")[0],
-      balance:10000,
-      type:'DEBIT'
+      balance: 10000,
+      type: "DEBIT",
     };
     setTransactions([...transactions, newTransaction]);
   };
@@ -176,7 +170,9 @@ export function PaymentsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">KES {summary?.current_balance || 0}</div>
+            <div className="text-2xl font-bold">
+              KES {summary?.current_balance || 0}
+            </div>
             <p className="text-xs text-gray-500">Available funds</p>
           </CardContent>
         </Card>
@@ -230,8 +226,7 @@ export function PaymentsPage() {
               {payments.map((payment) => (
                 <div
                   key={payment.id}
-                  className="flex items-center justify-between"
-                >
+                  className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
                     <div className="rounded-full bg-blue-100 p-2">
                       <CreditCard className="h-4 w-4 text-blue-600" />
@@ -250,8 +245,7 @@ export function PaymentsPage() {
                         payment.status === "COMPLETED"
                           ? "text-green-600"
                           : "text-yellow-600"
-                      }`}
-                    >
+                      }`}>
                       {payment.status}
                     </p>
                   </div>
@@ -272,61 +266,62 @@ export function PaymentsPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {transactions.map((transaction) => (
-                <div
-                  key={transaction.id}
-                  className="flex items-center justify-between"
-                >
-                  <div className="flex items-center space-x-4">
-                    <div
-                      className={`rounded-full p-2 ${
-                        transaction.type === "CREDIT"
-                          ? "bg-green-100"
-                          : "bg-red-100"
-                      }`}
-                    >
-                      <BarChart
-                        className={`h-4 w-4 ${
-                          transaction.type === "CREDIT"
+              {transactions.length > 0 ? (
+                transactions.map((transaction) => (
+                  <div
+                    key={transaction.transaction_id}
+                    className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                      <div
+                        className={`rounded-full p-2 ${
+                          transaction.trans_type === "SALE"
+                            ? "bg-green-100"
+                            : "bg-red-100"
+                        }`}>
+                        <BarChart
+                          className={`h-4 w-4 ${
+                            transaction.trans_type === "SALE"
+                              ? "text-green-600"
+                              : "text-red-600"
+                          }`}
+                        />
+                      </div>
+                      <div>
+                        <p className="font-medium">{transaction.narrative}</p>
+                        <p className="text-sm text-gray-500">
+                          {new Date(transaction.created_at).toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p
+                        className={`font-medium ${
+                          transaction.trans_type === "SALE"
                             ? "text-green-600"
                             : "text-red-600"
-                        }`}
-                      />
-                    </div>
-                    <div>
-                      <p className="font-medium">{transaction.description}</p>
+                        }`}>
+                        {transaction.trans_type === "SALE" ? "+" : "-"} KES{" "}
+                        {transaction.value}
+                      </p>
                       <p className="text-sm text-gray-500">
-                        {transaction.date}
+                        Balance: KES {transaction.running_balance}
                       </p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p
-                      className={`font-medium ${
-                        transaction.type === "CREDIT"
-                          ? "text-green-600"
-                          : "text-red-600"
-                      }`}
-                    >
-                      {transaction.type === "CREDIT" ? "+" : "-"} KES{" "}
-                      {transaction.amount}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      Balance: KES {transaction.balance}
-                    </p>
-                  </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <p className="text-gray-500">No transactions available</p>
+              )}
             </div>
           </CardContent>
         </Card>
 
         {showPaymentModal && (
-        <PaymentModal
-          onClose={() => setShowPaymentModal(false)}
-          onSubmit={handleNewPayment}
-        />
-      )}
+          <PaymentModal
+            onClose={() => setShowPaymentModal(false)}
+            onSubmit={handleNewPayment}
+          />
+        )}
       </div>
     </div>
   );

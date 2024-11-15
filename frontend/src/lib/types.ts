@@ -30,13 +30,16 @@ export type Payment = {
 };
 
 export type Transaction = {
-  id: string;
-  saccoId: string;
-  amount: number;
-  type: 'CREDIT' | 'DEBIT';
-  description: string;
-  date: string;
-  balance: number;
+  transaction_id: string; // matches "transaction_id" in response
+  invoice: string | null; // "invoice" can be null
+  currency: string; // "currency" field
+  value: number; // corresponds to "value"
+  running_balance: number; // matches "running_balance"
+  narrative: string; // corresponds to "narrative"
+  trans_type:"SALE" | 'CHARGE'; // map "trans_type"
+  status: string; // "status" field
+  created_at: string; // matches "created_at" timestamp
+  updated_at: string; // matches "updated_at" timestamp
 };
 
 export type SaccoAccount = {
