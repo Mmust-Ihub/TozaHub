@@ -28,9 +28,19 @@ class SaccoSerializer(serializers.ModelSerializer):
         return representation
 
 
-class VehicleSerializer(serializers.ModelSerializer):
+class VehicleDetailSerializer(serializers.ModelSerializer):
     sacco = SaccoSerializer().fields["name"]
 
+    class Meta:
+        model = Vehicle
+        fields = [
+            "sacco",
+            "number_plate",
+            "driver","pk",
+        ]
+
+
+class VehicleRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vehicle
         fields = [
