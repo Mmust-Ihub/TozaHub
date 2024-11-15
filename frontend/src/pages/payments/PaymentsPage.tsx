@@ -98,7 +98,6 @@ export function PaymentsPage() {
     const data = await response.json();
     if (response.ok) {
       setPayments(data);
-      console.log(data)
     }
   };
 

@@ -8,11 +8,11 @@ export type User = {
 
 export type Vehicle = {
   id: string;
-  plateNumber: string;
+  number_plate: string;
   type: 'BUS' | 'MATATU' | 'TAXI';
   capacity: number;
-  owner: string;
-  saccoId: string;
+  driver: string;
+  sacco: string;
   route: string;
   registrationDate: string;
   status: 'ACTIVE' | 'SUSPENDED' | 'EXPIRED';
