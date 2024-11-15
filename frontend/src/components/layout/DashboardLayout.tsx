@@ -80,8 +80,8 @@ export function DashboardLayout() {
 
       if (response.ok) {
         const data = await response.json();
-        console.log(data);
         setUser(data);
+        localStorage.setItem("email",data?.email)
       }
 
       if (response.status === 401) {
@@ -105,7 +105,6 @@ export function DashboardLayout() {
   const toogleMenu = () => {
     setIsOpen(!isOpen);
   };
-  console.log(token);
   return (
     <div className="min-h-screen bg-gray-50 relative">
       <div className="z-[999] lg:hidden" onClick={toogleMenu}>

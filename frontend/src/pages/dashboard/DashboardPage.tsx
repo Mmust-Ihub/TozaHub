@@ -112,13 +112,12 @@ export function DashboardPage() {
         setBalance(data?.revenue?.$numberDecimal);
         setPendingPayment(data?.pending);
 
-        console.log(data);
       }
       if (response.status === 401) {
         clearAuthToken();
         window.location.href = "/login";
       }
-    } catch (error) {
+    } catch (error) { 
       console.error(error);
     }
   };
