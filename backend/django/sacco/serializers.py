@@ -36,7 +36,7 @@ class VehicleDetailSerializer(serializers.ModelSerializer):
         fields = [
             "sacco",
             "number_plate",
-            "driver",
+            "driver","pk",
         ]
 
 
