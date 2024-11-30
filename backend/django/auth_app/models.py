@@ -73,6 +73,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return str(uuid.uuid4())
 
     def save(self, *args, **kwargs):
+
         if not self.id:
             self.id = self.generate_user_id()
         super().save(*args, **kwargs)
