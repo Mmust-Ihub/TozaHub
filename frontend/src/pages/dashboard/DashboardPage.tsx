@@ -1,4 +1,3 @@
-
 import {
   BarChart3,
   Car,
@@ -31,6 +30,13 @@ export function DashboardPage() {
   const [vehicleCount, setVehicleCount] = useState();
   const { getItem, clearAuthToken } = useAuthToken();
   const { token, isRole } = getItem();
+  if (
+    !token ||
+    !isRole ||
+    !["sys_admin", "sacco_admin", "gov_admin"].includes(isRole)
+  ) {
+    return <Navigate to="/login" replace />;
+  }
   if (!token || !isRole) {
     return <Navigate to="/login" replace />;
   }
@@ -39,7 +45,6 @@ export function DashboardPage() {
     fetchVehicles();
     fetchBalance();
   }, []);
-
 
   useEffect(() => {
     fetchSummary();
@@ -111,19 +116,26 @@ export function DashboardPage() {
         const data = await response.json();
         setBalance(data?.revenue?.$numberDecimal);
         setPendingPayment(data?.pending);
-
       }
       if (response.status === 401) {
         clearAuthToken();
         window.location.href = "/login";
       }
-    } catch (error) { 
+    } catch (error) {
       console.error(error);
     }
   };
+  interface Stat {
+    name: string;
+    value: string;
+    icon: React.ComponentType<{ className?: string }>;
+    change: string;
+  }
 
-
-  const role = isRole
+  const role: "sys_admin" | "sacco_admin" | "gov_admin" = isRole as
+    | "sys_admin"
+    | "sacco_admin"
+    | "gov_admin";
   const stats = {
     sys_admin: [
       {
@@ -146,7 +158,7 @@ export function DashboardPage() {
       },
       {
         name: "Collection Rate",
-        value: "94%",
+        value: "34%",
         icon: BarChart3,
         change: "+2.3%",
       },
@@ -154,7 +166,7 @@ export function DashboardPage() {
     sacco_admin: [
       {
         name: "Monthly Revenue",
-        value: "KES 450K",
+        value: "KES 4K",
         icon: TrendingUp,
         change: "+8.2%",
       },
@@ -162,15 +174,15 @@ export function DashboardPage() {
       { name: "Due Payments", value: "12", icon: CreditCard, change: "-2.4%" },
       {
         name: "Compliance Rate",
-        value: "92%",
+        value: "42%",
         icon: BarChart3,
         change: "+1.8%",
       },
     ],
-    GOVERNMENT_AGENT: [
+    gov_admin: [
       {
         name: "Total Collections",
-        value: "KES 1.8M",
+        value: "KES 1k",
         icon: TrendingUp,
         change: "+15.3%",
       },
@@ -195,7 +207,7 @@ export function DashboardPage() {
     datasets: [
       {
         label: "Revenue",
-        data: [650000, 590000, 800000, 810000, 560000, 750000],
+        data: [65, 59, 80, 81, 56, 75],
         backgroundColor: "rgba(59, 130, 246, 0.5)",
       },
     ],
@@ -205,7 +217,7 @@ export function DashboardPage() {
     labels: ["Matatu", "Bus", "Taxi"],
     datasets: [
       {
-        data: [63, 25, 12],
+        data: [13, 25, 12],
         backgroundColor: [
           "rgba(59, 130, 246, 0.5)",
           "rgba(16, 185, 129, 0.5)",
@@ -215,7 +227,7 @@ export function DashboardPage() {
     ],
   };
 
-  const currentStats = stats[role!];
+  const currentStats = stats[role];
   console.log(selectedPeriod);
   return (
     <div className="space-y-6">
@@ -245,7 +257,7 @@ export function DashboardPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {currentStats.map((stat) => (
+        {currentStats.map((stat: Stat) => (
           <Card key={stat.name}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">{stat.name}</CardTitle>
@@ -347,8 +359,8 @@ export function DashboardPage() {
               <tbody>
                 <tr className="border-b bg-white">
                   <td className="px-6 py-4">Revenue Collection</td>
-                  <td className="px-6 py-4">KES 4.2M</td>
-                  <td className="px-6 py-4">KES 4.5M</td>
+                  <td className="px-6 py-4">KES 400</td>
+                  <td className="px-6 py-4">KES 4k</td>
                   <td className="px-6 py-4">
                     <span className="rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800">
                       93% of target

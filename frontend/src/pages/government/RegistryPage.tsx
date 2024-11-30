@@ -13,11 +13,11 @@ export default function RegistryPage() {
   const [vehicles] = useState<Vehicle[]>([
     {
       id: "1",
-      plateNumber: "KBZ 123A",
+      number_plate: "KBZ 123A",
       type: "MATATU",
       capacity: 14,
-      owner: "John Doe",
-      saccoId: "SACCO001",
+      driver: "John Doe",
+      sacco: "SACCO001",
       route: "CBD - Westlands",
       status: "ACTIVE",
       registrationDate: "2024-02-15",
@@ -25,11 +25,11 @@ export default function RegistryPage() {
     },
     {
       id: "2",
-      plateNumber: "KCA 456B",
+      number_plate: "KCA 456B",
       type: "BUS",
       capacity: 33,
-      owner: "Jane Smith",
-      saccoId: "SACCO002",
+      driver: "Jane Smith",
+      sacco: "SACCO002",
       route: "CBD - Kikuyu",
       status: "SUSPENDED",
       registrationDate: "2024-02-10",
@@ -141,11 +141,11 @@ export default function RegistryPage() {
                     <td className="px-6 py-4">
                       <div className="flex items-center">
                         <Car className="mr-2 h-4 w-4 text-gray-500" />
-                        {vehicle.plateNumber}
+                        {vehicle.number_plate}
                       </div>
                     </td>
                     <td className="px-6 py-4">{vehicle.type}</td>
-                    <td className="px-6 py-4">{vehicle.saccoId}</td>
+                    <td className="px-6 py-4">{vehicle.sacco}</td>
                     <td className="px-6 py-4">{vehicle.route}</td>
                     <td className="px-6 py-4">
                       <span

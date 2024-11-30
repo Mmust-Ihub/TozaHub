@@ -37,7 +37,7 @@ export default function ReportsPage() {
     datasets: [
       {
         label: "Revenue",
-        data: [650000, 590000, 800000, 810000, 560000, 750000],
+        data: [650, 590, 800, 810, 560, 750],
         backgroundColor: "rgba(59, 130, 246, 0.5)",
       },
     ],
@@ -92,7 +92,7 @@ export default function ReportsPage() {
             <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">KES 4.2M</div>
+            <div className="text-2xl font-bold">KES 4k</div>
             <p className="text-xs text-green-600">+12% from last month</p>
           </CardContent>
         </Card>
@@ -116,7 +116,7 @@ export default function ReportsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">85%</div>
+            <div className="text-2xl font-bold">65%</div>
             <p className="text-xs text-red-600">-2% from target</p>
           </CardContent>
         </Card>
