@@ -12,7 +12,7 @@ type User = {
   id: string;
   name: string;
   email: string;
-  role: "GENERAL_ADMIN" | "SACCO_ADMIN" | "GOVERNMENT_AGENT";
+  role: "sys_admin" | "sacco_admin" | "gov_admin";
   status: "ACTIVE" | "INACTIVE";
   lastLogin: string;
 };
@@ -23,7 +23,7 @@ export default function UsersPage() {
       id: "1",
       name: "John Doe",
       email: "john@example.com",
-      role: "GENERAL_ADMIN",
+      role: "sys_admin",
       status: "ACTIVE",
       lastLogin: "2024-02-20 09:30",
     },
@@ -31,7 +31,7 @@ export default function UsersPage() {
       id: "2",
       name: "Jane Smith",
       email: "jane@example.com",
-      role: "SACCO_ADMIN",
+      role: "sacco_admin",
       status: "ACTIVE",
       lastLogin: "2024-02-19 14:15",
     },
@@ -65,7 +65,7 @@ export default function UsersPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {users.filter((u) => u.role === "SACCO_ADMIN").length}
+              {users.filter((u) => u.role === "sacco_admin").length}
             </div>
             <p className="text-xs text-gray-500">Managing vehicle operators</p>
           </CardContent>
@@ -79,7 +79,7 @@ export default function UsersPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {users.filter((u) => u.role === "GOVERNMENT_AGENT").length}
+              {users.filter((u) => u.role === "gov_admin").length}
             </div>
             <p className="text-xs text-gray-500">Monitoring compliance</p>
           </CardContent>

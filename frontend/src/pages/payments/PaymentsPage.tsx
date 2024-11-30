@@ -39,7 +39,7 @@ type Summary = {
 
 export function PaymentsPage() {
   const { getItem } = useAuthToken();
-  const { token, userEmail } = getItem();
+  // const { token, userEmail } = getItem();
   const [summary, setSummary] = useState<Summary | null>(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
  
@@ -112,7 +112,7 @@ export function PaymentsPage() {
     datasets: [
       {
         label: "Monthly Revenue",
-        data: [65000, 59000, 80000, 81000, 56000, 75000],
+        data: [150, 490, 550, 670, 100, 75],
         backgroundColor: "rgba(59, 130, 246, 0.5)",
       },
     ],
@@ -137,7 +137,7 @@ export function PaymentsPage() {
       saccoId: "SACCO001",
       description: "Account recharge",
       date: new Date().toISOString().split("T")[0],
-      balance: 10000,
+      balance: 1000,
       type: "DEBIT",
     };
     setTransactions([...transactions, newTransaction]);
@@ -182,7 +182,7 @@ export function PaymentsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">KES 75,000</div>
+            <div className="text-2xl font-bold">KES 750</div>
             <p className="text-xs text-green-600">+12.5% from last month</p>
           </CardContent>
         </Card>

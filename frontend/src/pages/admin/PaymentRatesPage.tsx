@@ -23,19 +23,19 @@ export default function PaymentRatesPage() {
     {
       id: "1",
       vehicleType: "MATATU",
-      dailyRate: 300,
-      monthlyRate: 8000,
-      annualRate: 85000,
-      penaltyRate: 500,
+      dailyRate: 30,
+      monthlyRate: 800,
+      annualRate: 8500,
+      penaltyRate: 50,
       effectiveDate: "2024-01-01",
     },
     {
       id: "2",
       vehicleType: "BUS",
-      dailyRate: 500,
-      monthlyRate: 12000,
-      annualRate: 120000,
-      penaltyRate: 1000,
+      dailyRate: 50,
+      monthlyRate: 120,
+      annualRate: 120,
+      penaltyRate: 100,
       effectiveDate: "2024-01-01",
     },
   ]);
@@ -75,7 +75,7 @@ export default function PaymentRatesPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">KES 2.4M</div>
+            <div className="text-2xl font-bold">KES 2k</div>
             <p className="text-xs text-green-600">+15% from last month</p>
           </CardContent>
         </Card>
@@ -87,7 +87,7 @@ export default function PaymentRatesPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">KES 125K</div>
+            <div className="text-2xl font-bold">KES 15K</div>
             <p className="text-xs text-red-600">-8% from last month</p>
           </CardContent>
         </Card>

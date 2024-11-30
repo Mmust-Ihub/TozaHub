@@ -15,7 +15,7 @@ import { cn } from "../../lib/utils";
 import useAuthToken from "../../hooks/useAuth";
 import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
-import { set } from "react-hook-form";
+
 
 type user = {
   email: string;
@@ -39,7 +39,7 @@ const navigation = {
     { name: "Payments", href: "/payments", icon: CreditCard },
     { name: "Settings", href: "/settings", icon: Settings },
   ],
-  GOVERNMENT_AGENT: [
+  gov_admin: [
     { name: "Dashboard", href: "/dashboard", icon: BarChart3 },
     { name: "Vehicle Registry", href: "/registry", icon: Car },
     { name: "Reports", href: "/reports", icon: BarChart3 },
@@ -59,7 +59,7 @@ export function DashboardLayout() {
   if (!token || !isRole) {
     return <Navigate to="/login" replace />;
   }
-  const role = isRole
+  const role = isRole as keyof typeof navigation;
 
   useEffect(() => {
     fetchUser();
@@ -81,7 +81,7 @@ export function DashboardLayout() {
       if (response.ok) {
         const data = await response.json();
         setUser(data);
-        localStorage.setItem("email",data?.email)
+        localStorage.setItem("email", data?.email);
       }
 
       if (response.status === 401) {
