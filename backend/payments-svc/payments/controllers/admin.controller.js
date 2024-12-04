@@ -2,8 +2,13 @@ import { catchAsync } from "../utils/catchAsync.js";
 import config from "../config/config.js";
 import { summarySchema, withdrawSchema } from "../helpers/schemaValidation.js";
 import { ApiError } from "../utils/APiError.js";
-import { getSummary, withdraw } from "../services/admin.service.js";
+import { getRevenue, getSummary, withdraw } from "../services/admin.service.js";
 import { remoteWalletData } from "../services/wallet.service.js";
+
+const totalRevenue = catchAsync(async(req, res) => {
+  const results = await getRevenue()
+  return res.status(299).json(results)
+})
 
 const adminSummary = catchAsync(async(req, res) => {
     const result = summarySchema.validate(req.query)
@@ -32,4 +37,4 @@ const withdrawBalance = catchAsync(async(req, res) => {
   return res.status(200).json(resp)
 })
 
-export default { adminSummary, accountBalance, withdrawBalance }
+export default { adminSummary, accountBalance, withdrawBalance, totalRevenue }

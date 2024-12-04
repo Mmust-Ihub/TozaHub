@@ -38,9 +38,9 @@ export function LoginPage() {
       if (response.ok) {
         toast.success("Login successful", { id: notify });
         const data = await response.json();
-        console.log(data);
         localStorage.setItem("tozaAuth", data?.access);
-        localStorage.setItem("tozaRole", JSON.stringify(data?.is_sacco_admin));
+        localStorage.setItem("tozaRole", (data?.role));
+
         // data?.is_sacco_admin ? navigate("/sacco") : navigate("/dashboard");
         navigate("/dashboard");
       }

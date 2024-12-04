@@ -1,9 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
-import requests
 from rest_framework import status
-from decouple import config
 from drf_spectacular.utils import (
     extend_schema,
     OpenApiParameter,
@@ -14,7 +12,8 @@ from .models import (
     Sacco,
 )
 from .serializers import (
-    VehicleSerializer,
+    VehicleDetailSerializer,
+    VehicleRegisterSerializer,
     SaccoSerializer,
 )
 
@@ -35,7 +34,7 @@ class SaccoViewSet(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         user = request.user
-        url = config("WALLET_URL")
+
         if "phone" not in request.data:
             return Response(
                 {"error": "Phone number is required"},
@@ -52,19 +51,10 @@ class SaccoViewSet(ModelViewSet):
                 {
                     "error": "You can't create more than one sacco",
                 },
-                status=status.HTTP_406_NOT_ACCEPTABLE
+                status=status.HTTP_406_NOT_ACCEPTABLE,
             )
         if user.is_sacco_admin:
             request.data["admin"] = user.id
-            wallet_data = {
-                "phone_number": request.data["phone"],
-                "email": request.data["email"],
-                "name": request.data["name"]
-            }
-            response = requests.post(url, data=wallet_data)
-            print(response.json())
-            if response.status_code == 202:
-                return super().create(request, *args, **kwargs)
             return Response(
                 {
                     "error": "Failed to create sacco wallet",
@@ -97,14 +87,20 @@ class SaccoViewSet(ModelViewSet):
 class VehicleViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
     queryset = Vehicle.objects.all()
-    serializer_class = VehicleSerializer
+    serializer_class = VehicleRegisterSerializer
 
     def list(self, request, *args, **kwargs):
+        self.serializer_class = VehicleDetailSerializer
         user = request.user
-        if user.is_sacco_admin:
-            sacco = Sacco.objects.get(admin=user)
-            print("Sacco", sacco)
-            self.queryset = Vehicle.objects.filter(sacco=sacco)
+        if user.is_sacco_admin and user.role == "sacco_admin":
+            try:
+                sacco = Sacco.objects.get(admin=user)
+                self.queryset = Vehicle.objects.filter(sacco=sacco)
+            except Sacco.DoesNotExist:
+                return Response(
+                    {"error": "User does not have a Sacco create one first"},
+                    status=404,
+                )
         return super().list(request, *args, **kwargs)
 
     # retrieve a vehicle base on its number plate
@@ -135,7 +131,7 @@ class VehicleViewSet(ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         try:
             vehicle = Vehicle.objects.get(number_plate=kwargs["pk"])
-            serializer = VehicleSerializer(vehicle)
+            serializer = VehicleDetailSerializer(vehicle)
             return Response(
                 serializer.data,
                 status=status.HTTP_200_OK,
@@ -162,12 +158,17 @@ class VehicleViewSet(ModelViewSet):
     )
     def create(self, request, *args, **kwargs):
         user = request.user
-        if user.is_sacco_admin:
-            sacco = Sacco.objects.get(admin=user)
-            request.data["sacco"] = sacco.id
-            return super().create(request, *args, **kwargs)
-
+        if user.is_sacco_admin and user.role == "sacco_admin":
+            try:
+                sacco = Sacco.objects.get(admin=user)
+                request.data["sacco"] = sacco.pk
+                return super().create(request, *args, **kwargs)
+            except Sacco.DoesNotExist:
+                return Response(
+                    {"error": "User does not have a Sacco create one first"},
+                    status=404,
+                )
         return Response(
-            {"error": "You are not authorized to create a vehicle"},
+            {"error": "You are not authorized to add a vehicle."},
             status=403,
         )

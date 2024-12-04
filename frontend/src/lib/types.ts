@@ -2,48 +2,51 @@ export type User = {
   id: string;
   name: string;
   email: string;
-  role: 'GENERAL_ADMIN' | 'SACCO_ADMIN' | 'GOVERNMENT_AGENT';
+  role: "sys_admin" | "sacco_admin" | "gov_admin";
   avatar?: string;
 };
 
 export type Vehicle = {
   id: string;
-  plateNumber: string;
-  type: 'BUS' | 'MATATU' | 'TAXI';
+  number_plate: string;
+  type: "BUS" | "MATATU" | "TAXI";
   capacity: number;
-  owner: string;
-  saccoId: string;
+  driver: string;
+  sacco: string;
   route: string;
   registrationDate: string;
-  status: 'ACTIVE' | 'SUSPENDED' | 'EXPIRED';
+  status: "ACTIVE" | "SUSPENDED" | "EXPIRED";
   lastPaymentDate?: string;
 };
 
 export type Payment = {
-  id: string;
-  vehicleId: string;
-  amount: number;
-  status: 'PENDING' | 'COMPLETED' | 'FAILED';
-  date: string;
-  type: 'MONTHLY' | 'ANNUAL' | 'PENALTY';
-  reference: string;
+  id: string; // Assuming you want to generate an ID for your transactions
+  number_plate: string; // Corresponds to "number_plate" in the API response
+  amount: { $numberDecimal: number }; // Convert "$numberDecimal" to a number
+  status: "success" | "failed"; // Match the "status" in the response
+  createdAt: string; // Use "createdAt" as the date
+  type: "MONTHLY" | "ANNUAL" | "PENALTY" | "TAX"; // Add "TAX" to the types
+  narrative: string; // Add "narrative" from the response
 };
 
 export type Transaction = {
-  id: string;
-  saccoId: string;
-  amount: number;
-  type: 'CREDIT' | 'DEBIT';
-  description: string;
-  date: string;
-  balance: number;
+  transaction_id: string;
+  invoice: string | null;
+  currency: string;
+  value: number;
+  running_balance: number;
+  narrative: string;
+  trans_type: "SALE" | "CHARGE";
+  status: string;
+  created_at: string;
+  updated_at: string;
 };
 
 export type SaccoAccount = {
   id: string;
   balance: number;
   lastRechargeDate: string;
-  status: 'ACTIVE' | 'SUSPENDED';
+  status: "ACTIVE" | "SUSPENDED";
 };
 
 export type Route = {

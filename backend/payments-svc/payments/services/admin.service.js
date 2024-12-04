@@ -59,6 +59,34 @@ export const getSummary = async(body) => {
   return results
 };
 
+export const getRevenue = async() => {
+  const revenuePipeline = [
+    {$match: {"status": "success"}},
+    {$group: {
+      _id: null,
+      revenue: {$sum: "$amount"}
+    }},
+    {$project: {
+      _id: 0,
+      revenue: 1
+    }}
+  ]
+  const pendingPipeline = [
+    {$match: {"status": "failed"}},
+    {$group: {
+      _id: null,
+      pending: {$sum: 1}
+    }},
+    {$project: {
+      _id: 0,
+      pending: 1
+    }}
+  ]
+  const revenue = await transactionModel.aggregate(revenuePipeline)
+  const pending = await transactionModel.aggregate(pendingPipeline)
+  return {...revenue[0], ...pending[0]}
+}
+
 export const withdraw = async(body) => {
   const resp = await payouts.mpesa({
       currency: 'KES',

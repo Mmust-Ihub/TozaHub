@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Car, Plus, Search } from "lucide-react";
 import { Button } from "../../components/ui/Button";
 import {
@@ -9,35 +9,38 @@ import {
 } from "../../components/ui/Card";
 import { VehicleRegistrationModal } from "./VehicleRegistrationModal";
 import type { Vehicle } from "../../lib/types";
+import useAuthToken from "../../hooks/useAuth";
+
 
 export function VehiclesPage() {
   const [showRegistrationModal, setShowRegistrationModal] = useState(false);
-  const [vehicles, setVehicles] = useState<Vehicle[]>([
-    {
-      id: "1",
-      plateNumber: "KBZ 123A",
-      type: "MATATU",
-      capacity: 14,
-      owner: "John Doe",
-      saccoId: "SACCO001",
-      route: "CBD - Westlands",
-      status: "ACTIVE",
-      registrationDate: "2024-02-15",
-      lastPaymentDate: "2024-02-01",
-    },
-    {
-      id: "2",
-      plateNumber: "KCA 456B",
-      type: "BUS",
-      capacity: 33,
-      owner: "Jane Smith",
-      saccoId: "SACCO001",
-      route: "CBD - Kikuyu",
-      status: "ACTIVE",
-      registrationDate: "2024-02-10",
-      lastPaymentDate: "2024-02-01",
-    },
-  ]);
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const { getItem } = useAuthToken();
+  const { token } = getItem();
+
+  const fetchVehicles = async()=>{
+    const response = await fetch(`https://toza-hub.vercel.app/api/vehicle`,{
+        method: "GET",
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+    })
+
+    const vehicles = await response.json()
+
+
+
+    if(response.ok){
+      setVehicles(vehicles)
+    }
+  }
+
+  useEffect(()=>{
+
+
+    fetchVehicles()
+  },[])
 
   const handleRegisterVehicle = async (data: any) => {
     const newVehicle: Vehicle = {
@@ -133,34 +136,35 @@ export function VehiclesPage() {
               <thead className="bg-gray-50 text-xs uppercase text-gray-700">
                 <tr>
                   <th className="px-6 py-3">Plate Number</th>
-                  <th className="px-6 py-3">Type</th>
+                  <th className="px-6 py-3">Sacco</th>
                   <th className="px-6 py-3">Capacity</th>
                   <th className="px-6 py-3">Owner</th>
-                  <th className="px-6 py-3">Route</th>
+                  {/* <th className="px-6 py-3">Route</th>
                   <th className="px-6 py-3">Status</th>
-                  <th className="px-6 py-3">Last Payment</th>
+                  <th className="px-6 py-3">Last Payment</th> */}
                   <th className="px-6 py-3">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {vehicles.map((vehicle) => (
-                  <tr key={vehicle.id} className="border-b bg-white">
+                {vehicles.map((vehicle,index) => (
+                  <tr key={index} className="border-b bg-white">
                     <td className="px-6 py-4">
                       <div className="flex items-center">
                         <Car className="mr-2 h-4 w-4 text-gray-500" />
-                        {vehicle.plateNumber}
+                        {vehicle.number_plate
+}
                       </div>
                     </td>
-                    <td className="px-6 py-4">{vehicle.type}</td>
+                    <td className="px-6 py-4">{vehicle.sacco}</td>
                     <td className="px-6 py-4">{vehicle.capacity}</td>
-                    <td className="px-6 py-4">{vehicle.owner}</td>
-                    <td className="px-6 py-4">{vehicle.route}</td>
+                    <td className="px-6 py-4">{vehicle.driver}</td>
+                    {/* <td className="px-6 py-4">{vehicle.route}</td>
                     <td className="px-6 py-4">
                       <span className="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
                         {vehicle.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4">{vehicle.lastPaymentDate}</td>
+                    <td className="px-6 py-4">{vehicle.lastPaymentDate}</td> */}
                     <td className="px-6 py-4">
                       <Button variant="ghost" size="sm">
                         View

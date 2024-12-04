@@ -15,7 +15,7 @@ import { cn } from "../../lib/utils";
 import useAuthToken from "../../hooks/useAuth";
 import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
-import { set } from "react-hook-form";
+
 
 type user = {
   email: string;
@@ -27,19 +27,19 @@ type user = {
 };
 
 const navigation = {
-  GENERAL_ADMIN: [
+  sys_admin: [
     { name: "Dashboard", href: "/dashboard", icon: BarChart3 },
     { name: "Payment Rates", href: "/payment-rates", icon: CreditCard },
     { name: "Users", href: "/users", icon: Users },
     { name: "Settings", href: "/settings", icon: Settings },
   ],
-  SACCO_ADMIN: [
+  sacco_admin: [
     { name: "Dashboard", href: "/dashboard", icon: BarChart3 },
     { name: "Vehicles", href: "/vehicles", icon: Car },
     { name: "Payments", href: "/payments", icon: CreditCard },
     { name: "Settings", href: "/settings", icon: Settings },
   ],
-  GOVERNMENT_AGENT: [
+  gov_admin: [
     { name: "Dashboard", href: "/dashboard", icon: BarChart3 },
     { name: "Vehicle Registry", href: "/registry", icon: Car },
     { name: "Reports", href: "/reports", icon: BarChart3 },
@@ -59,7 +59,8 @@ export function DashboardLayout() {
   if (!token || !isRole) {
     return <Navigate to="/login" replace />;
   }
-  const role = isRole ? "GENERAL_ADMIN" : "GOVERNMENT_AGENT";
+  const role = isRole as keyof typeof navigation;
+
   useEffect(() => {
     fetchUser();
   }, [token, isRole]);
@@ -79,13 +80,14 @@ export function DashboardLayout() {
 
       if (response.ok) {
         const data = await response.json();
-        console.log(data);
         setUser(data);
+        localStorage.setItem("email", data?.email);
       }
 
       if (response.status === 401) {
         console.log("Anauthorized error");
-        return <Navigate to="/login" replace />;
+        clearAuthToken();
+        window.location.href = "/login";
       }
     } catch (error) {
       console.log(error);
@@ -103,7 +105,6 @@ export function DashboardLayout() {
   const toogleMenu = () => {
     setIsOpen(!isOpen);
   };
-  console.log(token);
   return (
     <div className="min-h-screen bg-gray-50 relative">
       <div className="z-[999] lg:hidden" onClick={toogleMenu}>
