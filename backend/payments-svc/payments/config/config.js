@@ -38,7 +38,8 @@ const envVarsSchema = joi
     WALLET_QUEUE: joi.string().required().description("bullmq wallet queue"),
     EMAIL_QUEUE: joi.string().required().description("bullmq email queue"),
     SENSOR_QUEUE: joi.string().required().description("bullmq sensor queue"),
-    TRANS_QUEUE: joi.string().required().description("bullmq transaction queue")
+    TRANS_QUEUE: joi.string().required().description("bullmq transaction queue"),
+    TOPUP_QUEUE: joi.string().required().description("bullmq topup queue")
   })
   .unknown();
 
@@ -79,6 +80,7 @@ export default {
     wallet_queue: envVars.WALLET_QUEUE,
     email_queue: envVars.EMAIL_QUEUE,
     sensor_queue: envVars.SENSOR_QUEUE,
-    trans_queue: envVars.TRANS_QUEUE
+    trans_queue: envVars.TRANS_QUEUE,
+    topup_queue: envVars.TOPUP_QUEUE
   }
 };
