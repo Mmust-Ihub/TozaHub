@@ -2,7 +2,7 @@ import { catchAsync } from "../utils/catchAsync.js";
 import { ApiError } from "../utils/APiError.js";
 import { topUpSchema, walletSchema } from "../helpers/schemaValidation.js";
 import { getAllWallets, getTopUpHistory, getWalletData, topUp } from "../services/wallet.service.js";
-import { walletQueue } from "../jobs/queues/queue.js";
+import { topUpQueue, walletQueue } from "../jobs/queues/queue.js";
 import { removeConfig } from "../config/bullmq.js";
 
 const createWallet = catchAsync(async (req, res) => {
@@ -43,6 +43,14 @@ const topUpWallet = catchAsync(async (req, res) => {
   });
 });
 
+const topUpTest = catchAsync(async (req, res) => {
+  const job = await topUpQueue.add("top up wallet", req.body, removeConfig)
+  return res.status(202).json({
+    status: "success",
+    message: `job with id: ${job.id} received for processing`,
+  });
+});
+
 const topUpHistory = catchAsync(async (req, res) => {
   const { email } = req.body;
   if (!email) throw new ApiError(400, "email is required");
@@ -50,4 +58,4 @@ const topUpHistory = catchAsync(async (req, res) => {
   return res.status(200).json(resp)
 });
 
-export default { createWallet, getWallets, getWallet, topUpHistory, topUpWallet };
+export default { createWallet, getWallets, getWallet, topUpHistory, topUpWallet, topUpTest };
