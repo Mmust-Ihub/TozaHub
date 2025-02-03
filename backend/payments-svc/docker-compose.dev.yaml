@@ -76,8 +76,8 @@ services:
     restart: always
     image: mongo:4.4.18
     container_name: mongo-cont
-    ports:
-      - "27017:27017"
+    expose:
+      - 27017
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password
