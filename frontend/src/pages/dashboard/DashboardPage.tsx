@@ -1,11 +1,4 @@
-import {
-  BarChart3,
-  Car,
-  CreditCard,
-  Download,
-  FileText,
-  TrendingUp,
-} from "lucide-react";
+import { BarChart3, Car, CreditCard, FileText, TrendingUp } from "lucide-react";
 
 import {
   Card,
@@ -26,6 +19,12 @@ export function DashboardPage() {
   const [selectedPeriod, setSelectedPeriod] = useState("monthly");
   const [balance, setBalance] = useState();
   const [pendindPayment, setPendingPayment] = useState();
+
+  const [loadingVehicles, setLoadingVehicles] = useState(false);
+  const [loadingSummary, setLoadingSummary] = useState(false);
+  const [loadingBalance, setLoadingBalance] = useState(false);
+
+  const [summaryData, setSummaryData] = useState<any[]>([]);
 
   const [vehicleCount, setVehicleCount] = useState();
   const { getItem, clearAuthToken } = useAuthToken();
@@ -51,9 +50,12 @@ export function DashboardPage() {
   }, [selectedPeriod]);
 
   const fetchSummary = async () => {
+    setLoadingSummary(true);
     try {
       const response = await fetch(
-        ` http://164.92.165.41/api/v1/admin/summary?interval=${selectedPeriod}&start_date=2024-10-29&end_date=2024-11-07`,
+        `${
+          import.meta.env.VITE_BACKEND_URI
+        }/admin/summary?interval=${selectedPeriod}&start_date=2024-10-29&end_date=2025-02-06`,
         {
           method: "GET",
           headers: {
@@ -61,9 +63,12 @@ export function DashboardPage() {
           },
         }
       );
+
+      // console.log("response", await response.json());
       if (response.ok) {
         const data = await response.json();
-        console.log(data);
+        setSummaryData(data);
+        console.log("data", data);
       }
       if (response.status === 401) {
         clearAuthToken();
@@ -71,11 +76,13 @@ export function DashboardPage() {
       }
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoadingSummary(false);
     }
   };
 
   const fetchVehicles = async () => {
-    console.log("called");
+    setLoadingVehicles(true);
     try {
       const response = await fetch("https://toza-hub.vercel.app/api/vehicle", {
         method: "GET",
@@ -97,13 +104,16 @@ export function DashboardPage() {
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoadingVehicles(false);
     }
   };
 
   const fetchBalance = async () => {
+    setLoadingBalance(true);
     try {
       const response = await fetch(
-        "http://164.92.165.41/api/v1/admin/revenue",
+        `${import.meta.env.VITE_BACKEND_URI}/admin/revenue`,
 
         {
           method: "GET",
@@ -112,8 +122,11 @@ export function DashboardPage() {
           },
         }
       );
+
       if (response.ok) {
         const data = await response.json();
+
+        console.log("balance data", data);
         setBalance(data?.revenue?.$numberDecimal);
         setPendingPayment(data?.pending);
       }
@@ -123,8 +136,11 @@ export function DashboardPage() {
       }
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoadingBalance(false);
     }
   };
+
   interface Stat {
     name: string;
     value: string;
@@ -140,13 +156,15 @@ export function DashboardPage() {
     sys_admin: [
       {
         name: "Total Revenue",
-        value: `${balance ? "KES " + balance : ""}`,
+        value: `${
+          loadingBalance ? "loading.." : balance ? "KES " + balance : "0"
+        }`,
         icon: TrendingUp,
         change: "+12.5%",
       },
       {
         name: "Active Vehicles",
-        value: `${vehicleCount ? vehicleCount : ""}`,
+        value: `${loadingVehicles ? "loading.." : vehicleCount}`,
         icon: Car,
         change: "+3.2%",
       },
@@ -202,13 +220,54 @@ export function DashboardPage() {
     ],
   };
 
+  // const revenueData = {
+  //   labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+  //   datasets: [
+  //     {
+  //       label: "Revenue",
+  //       data: [65, 59, 80, 81, 56, 75],
+  //       backgroundColor: "rgba(59, 130, 246, 0.5)",
+  //     },
+  //   ],
+  // };
+
+  function getMonthAbbreviation(monthNumber: number): string {
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    return monthNames[monthNumber - 1];
+  }
+
   const revenueData = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+    labels: summaryData.map(
+      (item) => getMonthAbbreviation(item._id.month) + " " + item._id.year
+    ), // Use the year from backend
     datasets: [
       {
-        label: "Revenue",
-        data: [65, 59, 80, 81, 56, 75],
+        label: "Total Transactions",
+        data: summaryData.map((item) => item.total_transactions),
         backgroundColor: "rgba(59, 130, 246, 0.5)",
+      },
+      {
+        label: "Successful Transactions",
+        data: summaryData.map((item) => item.successful_transactions),
+        backgroundColor: "rgba(16, 185, 129, 0.5)",
+      },
+      {
+        label: "Pending Transactions",
+        data: summaryData.map((item) => item.pending_transactions),
+        backgroundColor: "rgba(245, 158, 11, 0.5)",
       },
     ],
   };
@@ -287,28 +346,28 @@ export function DashboardPage() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle>Revenue Trend</CardTitle>
-              <Button variant="ghost" size="sm">
-                <FileText className="mr-2 h-4 w-4" />
-                Download
-              </Button>
             </div>
           </CardHeader>
           <CardContent>
-            <Bar
-              data={revenueData}
-              options={{
-                responsive: true,
-                plugins: {
-                  legend: {
-                    position: "top" as const,
+            {loadingSummary ? (
+              <div>Loading graph...</div>
+            ) : (
+              <Bar
+                data={revenueData}
+                options={{
+                  responsive: true,
+                  plugins: {
+                    legend: {
+                      position: "top" as const,
+                    },
+                    title: {
+                      display: false,
+                    },
                   },
-                  title: {
-                    display: false,
-                  },
-                },
-              }}
-              height={100}
-            />
+                }}
+                height={200}
+              />
+            )}
           </CardContent>
         </Card>
 

@@ -64,17 +64,17 @@ export function LoginPage() {
   };
 
   return (
-    <div className="w-screen h-screen bg-gray-50 flex flex-col justify-center py-12 lg:px-8 items-center px-4">
+    <div className="w-screen h-screen bg-gray-50 flex flex-col justify-center py-12 lg:px-8 items-center px-4 bg-login">
       <Toaster position="top-right" />
       <form
         action=""
-        className="w-full md:w-[40%] justify-center items-center flex flex-col gap-4 border-2 py-12 px-2 shadow-2xl rounded-lg "
+        className="w-full md:w-[40%] justify-center items-center flex flex-col gap-4 border-2 py-12 px-2 shadow-2xl rounded-lg bg-gray-100"
       >
         <div className="sm:mx-auto sm:w-full sm:max-w-md pb-6">
           <div className="flex justify-center items-center">
             <Car className="h-12 w-12 text-blue-600" />
             <h2 className="text-center text-3xl font-extrabold text-gray-700">
-              TozaHub
+              TozaSmart
             </h2>
           </div>
 
