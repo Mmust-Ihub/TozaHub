@@ -40,6 +40,10 @@ export function LoginPage() {
         const data = await response.json();
         localStorage.setItem("tozaAuth", data?.access);
         localStorage.setItem("tozaRole", (data?.role));
+        if(data?.role == "gov_admin") {
+          console.log(data.role);
+          return navigate("/govt-dashboard");
+        }
 
         // data?.is_sacco_admin ? navigate("/sacco") : navigate("/dashboard");
         navigate("/dashboard");

@@ -11,6 +11,7 @@ import PaymentRatesPage from "./pages/admin/PaymentRatesPage";
 import UsersPage from "./pages/admin/UsersPage";
 import RegistryPage from "./pages/government/RegistryPage";
 import ReportsPage from "./pages/government/ReportsPage";
+import GovtDashboard from "./pages/government/GovtDashboard";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ export default function App() {
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<DashboardPage />} />
             <Route path="vehicles" element={<VehiclesPage />} />
+            <Route path="govt-dashboard" element={<GovtDashboard />} />
             <Route path="payments" element={<PaymentsPage />} />
             <Route path="settings" element={<SettingsPage />} />
             <Route path="payment-rates" element={<PaymentRatesPage />} />

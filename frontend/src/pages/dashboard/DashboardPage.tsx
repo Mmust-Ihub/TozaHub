@@ -220,16 +220,6 @@ export function DashboardPage() {
     ],
   };
 
-  // const revenueData = {
-  //   labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-  //   datasets: [
-  //     {
-  //       label: "Revenue",
-  //       data: [65, 59, 80, 81, 56, 75],
-  //       backgroundColor: "rgba(59, 130, 246, 0.5)",
-  //     },
-  //   ],
-  // };
 
   function getMonthAbbreviation(monthNumber: number): string {
     const monthNames = [

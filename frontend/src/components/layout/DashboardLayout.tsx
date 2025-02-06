@@ -40,10 +40,7 @@ const navigation = {
     { name: "Settings", href: "/settings", icon: Settings },
   ],
   gov_admin: [
-    { name: "Dashboard", href: "/dashboard", icon: BarChart3 },
-    { name: "Vehicle Registry", href: "/registry", icon: Car },
-    { name: "Reports", href: "/reports", icon: BarChart3 },
-    { name: "Settings", href: "/settings", icon: Settings },
+    { name: "Dashboard", href: "/govt-dashboard", icon: BarChart3 },
   ],
 };
 
