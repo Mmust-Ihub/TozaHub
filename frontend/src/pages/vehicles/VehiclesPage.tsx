@@ -11,36 +11,36 @@ import { VehicleRegistrationModal } from "./VehicleRegistrationModal";
 import type { Vehicle } from "../../lib/types";
 import useAuthToken from "../../hooks/useAuth";
 
-
 export function VehiclesPage() {
   const [showRegistrationModal, setShowRegistrationModal] = useState(false);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const { getItem } = useAuthToken();
   const { token } = getItem();
 
-  const fetchVehicles = async()=>{
-    const response = await fetch(`https://toza-hub.vercel.app/api/vehicle`,{
+  const fetchVehicles = async () => {
+    try {
+      const response = await fetch(`https://toza-hub.vercel.app/api/vehicle`, {
         method: "GET",
         headers: {
           "Content-type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-    })
+      });
+      console.log("response", response);
 
-    const vehicles = await response.json()
+      const vehicles = await response.json();
 
-
-
-    if(response.ok){
-      setVehicles(vehicles)
+      if (response.ok) {
+        setVehicles(vehicles);
+      }
+    } catch (error) {
+      console.log(error);
     }
-  }
+  };
 
-  useEffect(()=>{
-
-
-    fetchVehicles()
-  },[])
+  useEffect(() => {
+    fetchVehicles();
+  }, []);
 
   const handleRegisterVehicle = async (data: any) => {
     const newVehicle: Vehicle = {
@@ -146,13 +146,12 @@ export function VehiclesPage() {
                 </tr>
               </thead>
               <tbody>
-                {vehicles.map((vehicle,index) => (
+                {vehicles.map((vehicle, index) => (
                   <tr key={index} className="border-b bg-white">
                     <td className="px-6 py-4">
                       <div className="flex items-center">
                         <Car className="mr-2 h-4 w-4 text-gray-500" />
-                        {vehicle.number_plate
-}
+                        {vehicle.number_plate}
                       </div>
                     </td>
                     <td className="px-6 py-4">{vehicle.sacco}</td>
