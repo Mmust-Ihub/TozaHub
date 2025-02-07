@@ -42,7 +42,6 @@ export function LoginPage() {
     }
 
     try {
-      // Simulate API call
       const response = await fetch(
         `${import.meta.env.VITE_BACKEND_DJANGO_URI}/auth/login/`,
         {
@@ -67,7 +66,6 @@ export function LoginPage() {
           return navigate("/govt-dashboard");
         }
 
-        // data?.is_sacco_admin ? navigate("/sacco") : navigate("/dashboard");
         navigate("/dashboard");
       }
 
