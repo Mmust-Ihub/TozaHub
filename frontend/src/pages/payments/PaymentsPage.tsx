@@ -42,21 +42,23 @@ export function PaymentsPage() {
   // const { token, userEmail } = getItem();
   const [summary, setSummary] = useState<Summary | null>(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
- 
 
-  const [payments,setPayments] = useState<Payment[]>([]);
+  const [payments, setPayments] = useState<Payment[]>([]);
 
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
   const fetchSummary = async () => {
-    const response = await fetch("http://164.92.165.41/api/v1/sacco/summary", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email: "omoshjoe02@gmail.com" }),
-    });
+    const response = await fetch(
+      `${import.meta.env.VITE_BACKEND_URI}/sacco/summary`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: "omoshjoe02@gmail.com" }),
+      }
+    );
 
     const newSummary = await response.json();
     if (response.ok) {
@@ -66,7 +68,7 @@ export function PaymentsPage() {
 
   const fetchTopUpHistory = async () => {
     const response = await fetch(
-      "http://164.92.165.41/api/v1/sacco/topup/history",
+      `${import.meta.env.VITE_BACKEND_URI}/sacco/topup/history`,
       {
         method: "POST",
         headers: {
@@ -84,7 +86,7 @@ export function PaymentsPage() {
   };
   const fetchPaymentHistory = async () => {
     const response = await fetch(
-      "http://164.92.165.41/api/v1/sacco/transactions/history",
+      `${import.meta.env.VITE_BACKEND_URI}/sacco/transactions/history`,
       {
         method: "POST",
         headers: {
@@ -104,7 +106,7 @@ export function PaymentsPage() {
   useEffect(() => {
     fetchSummary();
     fetchTopUpHistory();
-    fetchPaymentHistory()
+    fetchPaymentHistory();
   }, []);
 
   const chartData = {
@@ -221,10 +223,8 @@ export function PaymentsPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {payments.map((payment,index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between">
+              {payments.map((payment, index) => (
+                <div key={index} className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
                     <div className="rounded-full bg-blue-100 p-2">
                       <CreditCard className="h-4 w-4 text-blue-600" />
@@ -232,18 +232,22 @@ export function PaymentsPage() {
                     <div>
                       <p className="font-medium">{payment.number_plate}</p>
                       <p className="text-sm text-gray-500">
-                        {payment.type} Payment • {new Date(payment.createdAt).toLocaleString()}
+                        {payment.type} Payment •{" "}
+                        {new Date(payment.createdAt).toLocaleString()}
                       </p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="font-medium">KES {payment.amount.$numberDecimal}</p>
+                    <p className="font-medium">
+                      KES {payment.amount.$numberDecimal}
+                    </p>
                     <p
                       className={`text-sm ${
                         payment.status === "success"
                           ? "text-green-600"
                           : "text-yellow-600"
-                      }`}>
+                      }`}
+                    >
                       {payment.status}
                     </p>
                   </div>
@@ -268,14 +272,16 @@ export function PaymentsPage() {
                 transactions.map((transaction) => (
                   <div
                     key={transaction.transaction_id}
-                    className="flex items-center justify-between">
+                    className="flex items-center justify-between"
+                  >
                     <div className="flex items-center space-x-4">
                       <div
                         className={`rounded-full p-2 ${
                           transaction.trans_type === "SALE"
                             ? "bg-green-100"
                             : "bg-red-100"
-                        }`}>
+                        }`}
+                      >
                         <BarChart
                           className={`h-4 w-4 ${
                             transaction.trans_type === "SALE"
@@ -297,7 +303,8 @@ export function PaymentsPage() {
                           transaction.trans_type === "SALE"
                             ? "text-green-600"
                             : "text-red-600"
-                        }`}>
+                        }`}
+                      >
                         {transaction.trans_type === "SALE" ? "+" : "-"} KES{" "}
                         {transaction.value}
                       </p>
