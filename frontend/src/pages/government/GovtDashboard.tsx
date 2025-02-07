@@ -1,6 +1,7 @@
 import { Loader } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/Card";
 import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 
 export type UnpaidDues = {
@@ -63,6 +64,7 @@ function GovtDashboard() {
       setLoadingSummary(false);
     }
   }
+  const navigate = useNavigate();
   return (
     <div>
       <div className="p-4 md:pb-8">
@@ -77,7 +79,7 @@ function GovtDashboard() {
         </div>
       ) : (
         Object.entries(summary || {}).map(([key, value]) => (
-          <Card key={key}>
+          <Card key={key} className="shadow-xl">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-gray-500 text-lg">{key == "totalUnpaidAmount"? key.replace(/([A-Z])/g, " $1").trim()+ " (KES)" : key.replace(/([A-Z])/g, " $1").trim()}</CardTitle> 
@@ -86,7 +88,7 @@ function GovtDashboard() {
             <CardContent>
               <h1 className="text-2xl font-bold  text-start">
                 {typeof value === "object" && value?.$numberDecimal
-                  ? value.$numberDecimal
+                  ? (Number(value.$numberDecimal) * 10000).toLocaleString()
                   : String(value)}
               </h1>
             </CardContent>
@@ -111,12 +113,12 @@ function GovtDashboard() {
           <div>
             {
               saccos?.map((sacco, index) => (
-                  <div>
-                    <div key={index} className="grid grid-cols-3 mb-2 md:grid-cols-3 gap-4 md:gap-6">
-                    <p className="  text-lg tracking-wide">{sacco.name}</p>
-                    <p className="px-4 text-lg tracking-wide font-bold text-gray-500">{sacco.pending.$numberDecimal}</p>
-                    <p className=" text-lg tracking-wide ">{sacco.email}</p>
-                    </div>
+                  <div key={index}>
+                    <Link to={'/govt-summary'} state={{ email: sacco.email, name: sacco.name }} className="grid hover:cursor-pointer hover:py-5 transition-all duration-100 rounded-md hover:shadow-md px-3 hover:bg-white grid-cols-3 mb-2 md:grid-cols-3 gap-4 md:gap-6">
+                      <p className="text-lg tracking-wide">{sacco.name}</p>
+                      <p className="px-4 text-lg tracking-wide font-bold text-gray-500">{(Number(sacco.pending.$numberDecimal) * 10000).toLocaleString()}</p>
+                      <p className="text-lg tracking-wide">{sacco.email}</p>
+                    </Link>
                     <hr className="border-gray-200 my-1"/>
                   </div>
                 )

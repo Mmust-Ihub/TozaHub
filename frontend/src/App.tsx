@@ -12,6 +12,7 @@ import UsersPage from "./pages/admin/UsersPage";
 import RegistryPage from "./pages/government/RegistryPage";
 import ReportsPage from "./pages/government/ReportsPage";
 import GovtDashboard from "./pages/government/GovtDashboard";
+import GovtSummary from "./pages/government/GovtSummary";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ export default function App() {
             <Route path="users" element={<UsersPage />} />
             <Route path="registry" element={<RegistryPage />} />
             <Route path="reports" element={<ReportsPage />} />
+            <Route path="/govt-summary" element={<GovtSummary/>} />
           </Route>
         </Routes>
       </BrowserRouter>
