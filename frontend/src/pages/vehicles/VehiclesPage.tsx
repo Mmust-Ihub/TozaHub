@@ -19,13 +19,16 @@ export function VehiclesPage() {
 
   const fetchVehicles = async () => {
     try {
-      const response = await fetch(`https://toza-hub.vercel.app/api/vehicle`, {
-        method: "GET",
-        headers: {
-          "Content-type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_DJANGO_URI}/vehicle`,
+        {
+          method: "GET",
+          headers: {
+            "Content-type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       console.log("response", response);
 
       const vehicles = await response.json();
@@ -50,7 +53,8 @@ export function VehiclesPage() {
       status: "ACTIVE",
       registrationDate: new Date().toISOString().split("T")[0],
     };
-    setVehicles([...vehicles, newVehicle]);
+    setVehicles((prev) => [...prev, newVehicle]);
+    // fetchVehicles();
   };
 
   return (
@@ -179,7 +183,10 @@ export function VehiclesPage() {
 
       {showRegistrationModal && (
         <VehicleRegistrationModal
-          onClose={() => setShowRegistrationModal(false)}
+          onClose={() => {
+            fetchVehicles();
+            setShowRegistrationModal(false);
+          }}
           onSubmit={handleRegisterVehicle}
         />
       )}

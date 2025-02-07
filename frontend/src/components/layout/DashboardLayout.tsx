@@ -65,7 +65,7 @@ export function DashboardLayout() {
   const fetchUser = async () => {
     try {
       const response = await fetch(
-        "https://toza-hub.vercel.app/api/auth/user",
+        `${import.meta.env.VITE_BACKEND_DJANGO_URI}/auth/user`,
         {
           method: "GET",
           headers: {

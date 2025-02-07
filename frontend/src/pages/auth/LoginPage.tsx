@@ -22,7 +22,7 @@ export function LoginPage() {
     try {
       // Simulate API call
       const response = await fetch(
-        "https://toza-hub.vercel.app/api/auth/login/",
+        `${import.meta.env.VITE_BACKEND_DJANGO_URI}/auth/login/`,
         {
           method: "POST",
           body: JSON.stringify({
@@ -39,8 +39,8 @@ export function LoginPage() {
         toast.success("Login successful", { id: notify });
         const data = await response.json();
         localStorage.setItem("tozaAuth", data?.access);
-        localStorage.setItem("tozaRole", (data?.role));
-        if(data?.role == "gov_admin") {
+        localStorage.setItem("tozaRole", data?.role);
+        if (data?.role == "gov_admin") {
           console.log(data.role);
           return navigate("/govt-dashboard");
         }

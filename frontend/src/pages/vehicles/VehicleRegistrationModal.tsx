@@ -8,7 +8,6 @@ import { Card } from "../../components/ui/Card";
 import toast from "react-hot-toast";
 import useAuthToken from "../../hooks/useAuth";
 
-
 const vehicleSchema = z.object({
   number_plate: z.string().min(6).max(8),
   driver: z.string().min(3),
@@ -21,7 +20,7 @@ interface Props {
   onSubmit: (data: VehicleFormData) => void;
 }
 
-export function VehicleRegistrationModal({ onClose}: Props) {
+export function VehicleRegistrationModal({ onClose }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const {
     register,
@@ -37,35 +36,30 @@ export function VehicleRegistrationModal({ onClose}: Props) {
   const handleFormSubmit = async (data: VehicleFormData) => {
     setIsLoading(true);
     try {
-     const response = await fetch(`https://toza-hub.vercel.app/api/vehicle/`,{
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-type": "application/json",
-        Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_DJANGO_URI}/vehicle/`,
+        {
+          method: "POST",
+          body: JSON.stringify(data),
+          headers: {
+            "Content-type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-      },
-    })
-   
-
-
-
-      if(response.ok){
-
-          toast.success("Vehicle successfully registered")
-          onClose();
-      }else{
-        toast.error("Couldn't register vehicle")
+      if (response.ok) {
+        toast.success("Vehicle successfully registered");
+        onClose();
+      } else {
+        toast.error("Couldn't register vehicle");
         onClose();
       }
-      
-     }catch(error){
-      console.error("Error creating Vehicle",error)
-      toast.error("Server Side Error")
+    } catch (error) {
+      console.error("Error creating Vehicle", error);
+      toast.error("Server Side Error");
       // onClose();
-
-     }
-     finally {
+    } finally {
       setIsLoading(false);
     }
   };
@@ -103,11 +97,9 @@ export function VehicleRegistrationModal({ onClose}: Props) {
               )}
             </div>
 
-          
-
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                Owner Name
+                Driver Name
               </label>
               <input
                 {...register("driver")}
@@ -119,8 +111,6 @@ export function VehicleRegistrationModal({ onClose}: Props) {
                 </p>
               )}
             </div>
-
-           
 
             <div className="flex justify-end space-x-3 pt-4">
               <Button type="button" variant="secondary" onClick={onClose}>

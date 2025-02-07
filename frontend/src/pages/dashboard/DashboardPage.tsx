@@ -84,13 +84,16 @@ export function DashboardPage() {
   const fetchVehicles = async () => {
     setLoadingVehicles(true);
     try {
-      const response = await fetch("https://toza-hub.vercel.app/api/vehicle", {
-        method: "GET",
-        headers: {
-          "Content-type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_DJANGO_URI}/vehicle`,
+        {
+          method: "GET",
+          headers: {
+            "Content-type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
