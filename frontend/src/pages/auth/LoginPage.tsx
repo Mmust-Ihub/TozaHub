@@ -1,9 +1,10 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import { Car } from "lucide-react";
 
 import { Button } from "../../components/ui/Button";
+import useAuthToken from "../../hooks/useAuth";
 
 export function LoginPage() {
   const [username, setUsername] = useState("");
@@ -11,6 +12,27 @@ export function LoginPage() {
   const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const { getItem } = useAuthToken();
+  const { token, isRole } = getItem();
+  useEffect(() => {
+    if (
+      token ||
+      isRole ||
+      (isRole && ["sys_admin", "sacco_admin", "gov_admin"].includes(isRole))
+    ) {
+      if (isRole == "gov_admin") {
+        return navigate("/govt-dashboard");
+      }
+      return navigate("/dashboard");
+    }
+    if (token || isRole) {
+      if (isRole == "gov_admin") {
+        return navigate("/govt-dashboard");
+      }
+      return navigate("/dashboard");
+    }
+  }, [isRole]);
 
   const handleLogin = async () => {
     setIsLoading(true);
@@ -123,36 +145,6 @@ export function LoginPage() {
           Login
         </Button>
       </form>
-
-      {/* <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-          <div className="space-y-4">
-            <Button
-              className="w-full"
-              onClick={() => handleLogin("GENERAL_ADMIN")}
-              isLoading={isLoading}
-            >
-              Login as General Admin
-            </Button>
-            <Button
-              className="w-full"
-              variant="secondary"
-              onClick={() => handleLogin("SACCO_ADMIN")}
-              isLoading={isLoading}
-            >
-              Login as Sacco Admin
-            </Button>
-            <Button
-              className="w-full"
-              variant="secondary"
-              onClick={() => handleLogin("GOVERNMENT_AGENT")}
-              isLoading={isLoading}
-            >
-              Login as Government Agent
-            </Button>
-          </div>
-        </div>
-      </div> */}
     </div>
   );
 }
