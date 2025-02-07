@@ -43,15 +43,18 @@ export function PaymentModal({ onClose }: Props) {
     console.log(dataWithEmail);
 
     try {
-      const response = await fetch(`http://164.92.165.41/api/v1/sacco/topup`, {
-        method: "POST",
-        body: JSON.stringify(dataWithEmail),
-        headers: {
-          'Accept': 'application/json',
-          "Content-type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URI}/sacco/topup`,
+        {
+          method: "POST",
+          body: JSON.stringify(dataWithEmail),
+          headers: {
+            Accept: "application/json",
+            "Content-type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
 
 
